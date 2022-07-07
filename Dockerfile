@@ -18,11 +18,6 @@ RUN apt-get update && apt-get install -y \
     googletest \
     && rm -rf /var/lib/apt/lists/*
 
-# Change USER to non-root
-RUN groupadd -r jklewgroup \
-    && useradd --no-log-init -r -g jklewgroup jklewuser
-USER jklewuser
-
 # Metadata from https://github.com/opencontainers/image-spec/blob/main/annotations.md
 ARG BUILD_DATE
 LABEL org.opencontainers.image.created=${BUILD_DATE}
@@ -33,8 +28,17 @@ LABEL org.opencontainers.image.title="Add Wrinkles to Brain"
 LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.10"
 LABEL org.opencontainers.image.version="1.0.0"
 
-# Copy source code from repo and build
+# Copy source code from repo
 COPY . /home/add-wrinkles-to-brain
+
+# Create/change to non-root USER
+# Also change ownerhip of ddd-wrinkles-to-brain folder to non-root
+RUN groupadd -r jklewgroup \
+    && useradd --no-log-init -r -g jklewgroup jklewuser \
+    && chown -R jklewuser:jklewgroup /home/add-wrinkles-to-brain
+USER jklewuser
+
+# Build source code
 WORKDIR /home/add-wrinkles-to-brain
 RUN cmake -S . -B build \
     && cmake --build build
