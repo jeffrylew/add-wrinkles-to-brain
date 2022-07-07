@@ -41,7 +41,7 @@ USER jklewuser
 # Build source code
 WORKDIR /home/add-wrinkles-to-brain
 RUN cmake -S . -B build \
-    && cmake --build build
+    && cmake --build build -j 2
 
 # Run tests upon container start
 CMD [ "ctest", "--test-dir", "build" ]
