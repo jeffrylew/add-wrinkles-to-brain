@@ -44,4 +44,4 @@ RUN cmake -S . -B build \
     && cmake --build build -j 2
 
 # Run tests upon container start
-CMD [ "ctest", "--test-dir", "build" ]
+CMD [ "ctest", "--output-on-failure", "--test-dir", "build" ]
