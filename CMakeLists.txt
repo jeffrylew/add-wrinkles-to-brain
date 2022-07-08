@@ -18,6 +18,7 @@ set(
   hr_puzzles
   "new_year_chaos"
   "ransom_note"
+  "two_strings"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
