@@ -14,14 +14,26 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(
-  new_year_chaos_test
-  new_year_chaos.cpp
-)
-target_link_libraries(
-  new_year_chaos_test
-  gtest_main
+set(
+  hr_puzzles
+  "new_year_chaos"
+  "ransom_note"
 )
 
+foreach(puzzle IN ITEMS ${hr_puzzles})
+  add_executable(
+    ${puzzle}_test
+    ${puzzle}.cpp
+  )
+
+  target_link_libraries(
+    ${puzzle}_test
+    gtest_main
+  )
+endforeach()
+
 include(GoogleTest)
-gtest_discover_tests(new_year_chaos_test)
+
+foreach(puzzle IN ITEMS ${hr_puzzles})
+  gtest_discover_tests(${puzzle}_test)
+endforeach()
