@@ -18,6 +18,14 @@ RUN apt-get update && apt-get install -y \
     googletest \
     && rm -rf /var/lib/apt/lists/*
 
+# Create/change to non-root USER
+# Also change ownerhip of ddd-wrinkles-to-brain folder to non-root
+RUN groupadd -r jklewgroup \
+    && useradd --no-log-init -r -g jklewgroup jklewuser \
+    && mkdir -p /home/add-wrinkles-to-brain \
+    && chown -R jklewuser:jklewgroup /home/add-wrinkles-to-brain
+USER jklewuser
+
 # Metadata from https://github.com/opencontainers/image-spec/blob/main/annotations.md
 ARG BUILD_DATE
 LABEL org.opencontainers.image.created=${BUILD_DATE}
@@ -30,13 +38,6 @@ LABEL org.opencontainers.image.version="1.0.1"
 
 # Copy source code from repo
 COPY . /home/add-wrinkles-to-brain
-
-# Create/change to non-root USER
-# Also change ownerhip of ddd-wrinkles-to-brain folder to non-root
-RUN groupadd -r jklewgroup \
-    && useradd --no-log-init -r -g jklewgroup jklewuser \
-    && chown -R jklewuser:jklewgroup /home/add-wrinkles-to-brain
-USER jklewuser
 
 # Build source code
 WORKDIR /home/add-wrinkles-to-brain
