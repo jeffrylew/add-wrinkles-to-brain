@@ -52,8 +52,8 @@ static long countTripletsFirstAttempt(std::vector<long> arr, long r)
         
         // Get vector of gp_second indices that are greater than i
         const auto gp_second_indices_vec = num_idx_map.at(gp_second);
-        std::vector<std::size_t> gp_second_gt_i_vec {
-            gp_second_indices_vec.size()};
+        std::vector<std::size_t> gp_second_gt_i_vec(
+            gp_second_indices_vec.size());
         
         auto it = std::copy_if(gp_second_indices_vec.cbegin(),
                                gp_second_indices_vec.cend(),
@@ -114,9 +114,9 @@ TEST(CountTripletsTest, TestCase1) {
     EXPECT_EQ(6L, countTripletsFirstAttempt(arr, geometric_ratio));
 }
 
-// Try Test case 2 (initially caused seg fault)
+// Try Test case 2 (fixed seg fault by replacing braces with parentheses)
 TEST(CountTripletsTest, TestCase2) {
-    std::vector<long> arr {100ULL, 1L};
+    std::vector<long> arr (100ULL, 1L);
     constexpr long geometric_ratio {1};
 
     EXPECT_EQ(161700L, countTripletsFirstAttempt(arr, geometric_ratio));
