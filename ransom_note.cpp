@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 static std::string checkMagazine(std::vector<std::string> magazine,
@@ -62,6 +63,35 @@ static std::string checkMagazine(std::vector<std::string> magazine,
 
 } // static std::string checkMagazine( ...
 
+//! @brief A solution from discussion section, slightly modified
+static std::string checkMagazineDiscussionSolution(
+    std::vector<std::string> magazine,
+    std::vector<std::string> note)
+{
+    // Map of words in magazine and their corresponding counts
+    std::unordered_map<std::string, int> magazine_map {};
+
+    for (const auto& word : magazine)
+    {
+        ++magazine_map[word];
+    }
+
+    for (const auto& word : note)
+    {
+        if (magazine_map[word] > 0)
+        {
+            --magazine_map[word];
+        }
+        else
+        {
+            return "No";
+        }
+    }
+
+    return "Yes";
+
+} // static std::string checkMagazineDiscussionSolution( ...
+
 // Try sample inputs given in problem description
 TEST(CheckMagazineTest, SampleInputs) {
     // Sample input 0 (Test case 0)
@@ -70,14 +100,32 @@ TEST(CheckMagazineTest, SampleInputs) {
     std::vector<std::string> note {
         "give", "one", "grand", "today"};
     EXPECT_EQ("Yes", checkMagazine(magazine, note));
+    EXPECT_EQ("Yes", checkMagazineDiscussionSolution(magazine, note));
 
     // Sample input 1 (Test case 20)
     magazine = {"two", "times", "three", "is", "not", "four"};
     note     = {"two", "times", "two", "is", "four"};
     EXPECT_EQ("No", checkMagazine(magazine, note));
+    EXPECT_EQ("No", checkMagazineDiscussionSolution(magazine, note));
 
     // Sample input 2 (Test case 21)
     magazine = {"ive", "got", "a", "lovely", "bunch", "of", "coconuts"};
     note     = {"ive", "got", "some", "coconuts"};
     EXPECT_EQ("No", checkMagazine(magazine, note));
+    EXPECT_EQ("No", checkMagazineDiscussionSolution(magazine, note));
+}
+
+// Test repeated words in magazine and note
+TEST(CheckMagazineTest, RepeatedWords) {
+    // Test repeated words, where magazine has more instances than note
+    std::vector<std::string> magazine {"hello", "hello", "hello"};
+    std::vector<std::string> note {"hello", "hello"};
+    EXPECT_EQ("Yes", checkMagazine(magazine, note));
+    EXPECT_EQ("Yes", checkMagazineDiscussionSolution(magazine, note));
+
+    // Test repeated words, where note has more instances than magazine
+    magazine = {"hello", "hello"};
+    note     = {"hello", "hello", "hello"};
+    EXPECT_EQ("No", checkMagazine(magazine, note));
+    EXPECT_EQ("No", checkMagazineDiscussionSolution(magazine, note));
 }
