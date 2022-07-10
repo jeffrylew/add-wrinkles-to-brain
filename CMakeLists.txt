@@ -16,6 +16,7 @@ enable_testing()
 
 set(
   hr_puzzles
+  "bubble_sort"
   "new_year_chaos"
   "ransom_note"
   "sherlock_and_anagrams"
