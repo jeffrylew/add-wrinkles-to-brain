@@ -43,7 +43,7 @@ static bool isAnagramTimedOut(const std::string& s1, const std::string& s2)
     }
     
     // Map of characters and their counts in s1
-    auto s1_char_map = mapifyStringTimedOut(s1);
+    auto s1_char_map = mapifyString(s1);
     
     // Iterate through characters in s2 and decrement counts in s1_char_map
     // If char from s2 is not in s1_char_map, s2 is not an anagram
