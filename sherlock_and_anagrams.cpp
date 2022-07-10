@@ -72,6 +72,49 @@ static bool isAnagramTimedOut(const std::string& s1, const std::string& s2)
     
 } // bool isAnagramTimedOut( ...
 
+//! @brief Helper function determining if s2 is an anagram of s1
+//! @param[in] s1_char_map Map of characters in s1 and their counts by value
+//! @param[in] s2          Reference to second string
+//! @return True is s2 is an anagram of s1, else false
+static bool isAnagram(std::map<char, int> s1_char_map, const std::string& s2)
+{
+    /*
+     * Usage in sherlockAndAnagrams ensures these preconditions are true
+     *
+    // Inputs must have same size and not be empty
+    if (s1.empty() || s2.empty() || s1.size() != s2.size())
+    {
+        return false;
+    }
+    */
+    
+    // Iterate through characters in s2 and decrement counts in s1_char_map
+    // If char from s2 is not in s1_char_map, s2 is not an anagram
+    // If count for a char is 0, remove it from map
+    // If map is empty after all chars in s2 are processed, is anagram
+    for (const auto c : s2)
+    {
+        auto it = s1_char_map.find(c);
+        if (it == s1_char_map.end())
+        {
+            // Char from s2 is not in s1_char_map
+            // s2 is not an anagram
+            return false;
+        }
+        
+        // Decrement count and if it zero, remove char from map
+        if (--it->second == 0)
+        {
+            s1_char_map.erase(it);
+        }
+        
+    } // for (const auto c : s2)
+    
+    // s2 is an anagram of s1 if s1_char_map is empty
+    return s1_char_map.empty();
+    
+} // bool isAnagram( ...
+
 static int sherlockAndAnagramsTimedOut(std::string s)
 {
     //! @details This version timed out for Test case 4
@@ -106,24 +149,69 @@ static int sherlockAndAnagramsTimedOut(std::string s)
 
 } // static int sherlockAndAnagramsTimedOut( ...
 
+static int sherlockAndAnagrams(std::string s)
+{
+    // Total number of anagrams
+    int n_anagrams {};
+    
+    const auto s_size = s.size();
+    
+    // Generate all possible substrings with lengths up to s_size-1
+    // Outer loop controls substring lengths for s1 and s2
+    for (std::size_t len = 1; len < s_size; ++len)
+    {
+        // Substring positions for s1
+        for (std::size_t pos1 = 0; pos1 + len < s_size; ++pos1)
+        {
+            auto s1 = s.substr(pos1, len);
+
+            // Create map of characters and their counts for s1
+            auto s1_char_map = mapifyString(s1);
+            
+            // Substring positions for s2
+            for (std::size_t pos2 = pos1 + 1; pos2 + len <= s_size; ++pos2)
+            {
+                auto s2 = s.substr(pos2, len);
+                
+                if (isAnagram(s1_char_map, s2)) {
+                    ++n_anagrams;
+                }
+            }
+        }
+    }
+    
+    return n_anagrams;
+
+} // static int sherlockAndAnagrams( ...
+
 // Try sample input given in problem description
 TEST(SherlockAndAnagramsTest, SampleInput) {
     EXPECT_EQ(2, sherlockAndAnagramsTimedOut("mom"));
+
+    EXPECT_EQ(2, sherlockAndAnagrams("mom"));
 }
 
 // Try Test case 0
 TEST(SherlockAndAnagramsTest, TestCase0) {
     EXPECT_EQ(4, sherlockAndAnagramsTimedOut("abba"));
     EXPECT_EQ(0, sherlockAndAnagramsTimedOut("abcd"));
+
+    EXPECT_EQ(4, sherlockAndAnagrams("abba"));
+    EXPECT_EQ(0, sherlockAndAnagrams("abcd"));
 }
 
 // Try Test case 1
 TEST(SherlockAndAnagramsTest, TestCase1) {
     EXPECT_EQ(3, sherlockAndAnagramsTimedOut("ifailuhkqq"));
     EXPECT_EQ(10, sherlockAndAnagramsTimedOut("kkkk"));
+
+    EXPECT_EQ(3, sherlockAndAnagrams("ifailuhkqq"));
+    EXPECT_EQ(10, sherlockAndAnagrams("kkkk"));
 }
 
 // Try Test case 2
 TEST(SherlockAndAnagramsTest, TestCase2) {
     EXPECT_EQ(5, sherlockAndAnagramsTimedOut("cdcd"));
+
+    EXPECT_EQ(5, sherlockAndAnagrams("cdcd"));
 }
