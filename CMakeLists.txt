@@ -17,6 +17,7 @@ enable_testing()
 set(
   hr_puzzles
   "bubble_sort"
+  "count_triplets"
   "minimum_swaps_2"
   "new_year_chaos"
   "ransom_note"
