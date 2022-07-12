@@ -18,6 +18,7 @@ set(
   hr_puzzles
   "bubble_sort"
   "count_triplets"
+  "mark_and_toys"
   "minimum_swaps_2"
   "new_year_chaos"
   "ransom_note"
