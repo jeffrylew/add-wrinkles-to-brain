@@ -2,8 +2,10 @@
 
 #include <algorithm>
 #include <iterator>
+#include <map>
 #include <tuple>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 //! @brief Calculate geometric progression starting at num with ratio r
@@ -163,6 +165,112 @@ static long countTripletsSecondAttempt(std::vector<long> arr, long r)
 
 } // static long countTripletsSecondAttempt( ...
 
+// A solution from discussion section
+static long countTripletsDiscussionSolution(std::vector<long> arr, long r)
+{
+    // Total number of triplets
+    long n_triplets {};
+    
+    // No triplets can exist if there are less than 3 elements
+    if (arr.size() < 3ULL)
+    {
+        return n_triplets;
+    }
+    
+    // Map of element frequency in arr
+    std::unordered_map<long, int> element_freq_map {};
+
+    // Map of pair<2nd element in triplet, 3rd element in triplet> frequency
+    // To avoid defining a std::hash specialization for std::pair, use std::map
+    // instead of std::unordered_map
+    // See https://www.techiedelight.com/use-std-pair-key-std-unordered_map-cpp/
+    using Triplet_pair_t = std::pair<long, long>;
+    std::map<Triplet_pair_t, int> pair_freq_map {};
+
+    // Create variables for second and third numbers in geometric progression
+    long x_r {};
+    long x_r_r {};
+
+    // Traverse arr backwards, let x = *rit
+    for (auto rit = arr.crbegin(); rit != arr.crend(); ++rit)
+    {
+        // Get second and third numbers in geometric progression
+        std::tie(std::ignore,
+                 x_r,
+                 x_r_r) = geometricProgression(*rit, r);
+
+        // Case 1: Current element x is first number in geometric progression
+        //         i.e. (x, x*r, x*r*r)
+        //         This means 2nd/3rd numbers have already been seen.
+        //         Increment n_triplets by the count from pair_freq_map
+        auto triplet_pair_it = pair_freq_map.find({x_r, x_r_r});
+        if (triplet_pair_it != pair_freq_map.cend())
+        {
+            n_triplets += triplet_pair_it->second;
+        }
+        
+        // Case 2: Current element x is second number in geometric progression
+        //         i.e. (x/r, x, x*r)
+        //         Update pair_freq_map with frequency of third number
+        if (element_freq_map.count(x_r) > 0)
+        {
+            pair_freq_map[{*rit, x_r}] += element_freq_map.at(x_r);
+        }
+        
+        // Case 3: Current element x is third number in geometric progression
+        //         i.e. (x/(r*r), x/r, x)
+        //         Update frequency of x in element_freq_map for future use
+        ++element_freq_map[*rit];
+
+    } // for (auto rit = arr.crbegin(); ...
+
+    return n_triplets;
+
+} // static long countTripletsDiscussionSolution( ...
+
+// Another solution from discussion section
+static long countTripletsDiscussionSolution2(std::vector<long> arr, long r)
+{
+    // Total number of triplets
+    long n_triplets {};
+    
+    // No triplets can exist if there are less than 3 elements
+    if (arr.size() < 3ULL)
+    {
+        return n_triplets;
+    }
+    
+    // Map of element frequency in arr
+    std::unordered_map<long, int> element_freq_map {};
+
+    // Map of (current value * r, current value * r * r) frequency
+    // Key is current value
+    std::unordered_map<long, int> pair_freq_map {};
+
+    // Traverse arr backwards, let x = current value = *rit
+    for (auto rit = arr.crbegin(); rit != arr.crend(); ++rit)
+    {
+        const auto x   = *rit;
+        const auto x_r = x * r;
+
+        if (pair_freq_map.count(x_r) > 0)
+        {
+            n_triplets += pair_freq_map.at(x_r);
+        }
+
+        if (element_freq_map.count(x_r) > 0)
+        {
+            pair_freq_map[x] += element_freq_map.at(x_r);
+        }
+
+        ++element_freq_map[x];
+
+    } // for (auto rit = arr.crbegin(); ...
+
+    return n_triplets;
+
+} // static long countTripletsDiscussionSolution2( ...
+
 // Try sample input given in problem description
 TEST(CountTripletsTest, SampleInput) {
     std::vector<long> arr {1, 4, 16, 64};
@@ -170,7 +278,11 @@ TEST(CountTripletsTest, SampleInput) {
 
     EXPECT_EQ(2L, countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(2L, countTripletSecondAttempt(arr, geometric_ratio));
+    EXPECT_EQ(2L, countTripletsSecondAttempt(arr, geometric_ratio));
+
+    EXPECT_EQ(2L, countTripletsDiscussionSolution(arr, geometric_ratio));
+
+    EXPECT_EQ(2L, countTripletsDiscussionSolution2(arr, geometric_ratio));
 }
 
 // Try Test case 0
@@ -180,7 +292,11 @@ TEST(CountTripletsTest, TestCase0) {
 
     EXPECT_EQ(2L, countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(2L, countTripletSecondAttempt(arr, geometric_ratio));
+    EXPECT_EQ(2L, countTripletsSecondAttempt(arr, geometric_ratio));
+
+    EXPECT_EQ(2L, countTripletsDiscussionSolution(arr, geometric_ratio));
+
+    EXPECT_EQ(2L, countTripletsDiscussionSolution2(arr, geometric_ratio));
 }
 
 // Try Test case 1
@@ -190,7 +306,11 @@ TEST(CountTripletsTest, TestCase1) {
 
     EXPECT_EQ(6L, countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(6L, countTripletSecondAttempt(arr, geometric_ratio));
+    EXPECT_EQ(6L, countTripletsSecondAttempt(arr, geometric_ratio));
+
+    EXPECT_EQ(6L, countTripletsDiscussionSolution(arr, geometric_ratio));
+
+    EXPECT_EQ(6L, countTripletsDiscussionSolution2(arr, geometric_ratio));
 }
 
 // Try Test case 2 (fixed seg fault by replacing braces with parentheses)
@@ -200,13 +320,17 @@ TEST(CountTripletsTest, TestCase2) {
 
     EXPECT_EQ(161700L, countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(161700L, countTripletSecondAttempt(arr, geometric_ratio));
+    EXPECT_EQ(161700L, countTripletsSecondAttempt(arr, geometric_ratio));
+
+    EXPECT_EQ(161700L, countTripletsDiscussionSolution(arr, geometric_ratio));
+
+    EXPECT_EQ(161700L, countTripletsDiscussionSolution2(arr, geometric_ratio));
 }
 
 // Try Test case 3 (times out for both attempts)
 // Test case 10 and 11 also time out for both
 TEST(CountTripletsTest, TestCase3) {
-    std::vector<long> arr (100000ULL, 1237L);
+    std::vector<long> arr(100000ULL, 1237L);
     constexpr long geometric_ratio {1};
 
     /*
@@ -216,6 +340,16 @@ TEST(CountTripletsTest, TestCase3) {
     EXPECT_EQ(1666616666700000L,
               countTripletSecondAttempt(arr, geometric_ratio));
      */
+
+    // The python versions of the functions below pass this test...
+
+    // First discussion solution fails this test case...
+    const auto result = countTripletsDiscussionSolution(arr, geometric_ratio);
+    EXPECT_NE(166661666700000L, result);
+
+    // Second discussion solution fails this test case...
+    const auto result2 = countTripletsDiscussionSolution2(arr, geometric_ratio);
+    EXPECT_NE(166661666700000L, result2);
 }
 
 // Try Test case 12
@@ -225,5 +359,9 @@ TEST(CountTripletsTest, TestCase12) {
 
     EXPECT_EQ(4L, countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(4L, countTripletSecondAttempt(arr, geometric_ratio));
+    EXPECT_EQ(4L, countTripletsSecondAttempt(arr, geometric_ratio));
+
+    EXPECT_EQ(4L, countTripletsDiscussionSolution(arr, geometric_ratio));
+
+    EXPECT_EQ(4L, countTripletsDiscussionSolution2(arr, geometric_ratio));
 }
