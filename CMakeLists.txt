@@ -17,6 +17,7 @@ enable_testing()
 set(
   hr_puzzles
   "bubble_sort"
+  "comparator"
   "count_triplets"
   "mark_and_toys"
   "minimum_swaps_2"
