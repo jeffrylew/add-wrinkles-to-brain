@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Build image with:
-# $ docker image build --rm --build-arg BUILD_DATE=$(date -u +'%FT%TZ') --tag jeffryklew/add-wrinkles-to-brain:1.0.10 --tag jeffryklew/add-wrinkles-to-brain:latest .
+# $ docker image build --rm --build-arg BUILD_DATE=$(date -u +'%FT%TZ') --tag jeffryklew/add-wrinkles-to-brain:1.0.11 --tag jeffryklew/add-wrinkles-to-brain:latest .
 #
 # Push image to dockerhub with:
 # $ docker image push --all-tags jeffryklew/add-wrinkles-to-brain
@@ -34,7 +34,7 @@ LABEL org.opencontainers.image.url="https://hub.docker.com/repository/docker/jef
 LABEL org.opencontainers.image.source="https://github.com/jeffrylew/add-wrinkles-to-brain/Dockerfile"
 LABEL org.opencontainers.image.title="Add Wrinkles to Brain"
 LABEL org.opencontainers.image.base.name="docker.io/library/ubuntu:22.10"
-LABEL org.opencontainers.image.version="1.0.10"
+LABEL org.opencontainers.image.version="1.0.11"
 
 # Copy source code from repo
 COPY . /home/add-wrinkles-to-brain
