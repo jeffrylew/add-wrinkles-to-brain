@@ -334,10 +334,10 @@ TEST(CountTripletsTest, TestCase3) {
     constexpr long geometric_ratio {1};
 
     /*
-    EXPECT_EQ(1666616666700000L,
+    EXPECT_EQ(166661666700000L,
               countTripletsFirstAttempt(arr, geometric_ratio));
 
-    EXPECT_EQ(1666616666700000L,
+    EXPECT_EQ(166661666700000L,
               countTripletSecondAttempt(arr, geometric_ratio));
      */
 
