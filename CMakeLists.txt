@@ -16,6 +16,7 @@ enable_testing()
 
 set(
   hr_puzzles
+  "alternating_characters"
   "bubble_sort"
   "comparator"
   "count_triplets"
