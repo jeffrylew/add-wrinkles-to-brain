@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
 # Build image with:
-# $ docker image build --rm --build-arg BUILD_DATE=$(date -u +'%FT%TZ') --tag jeffryklew/add-wrinkles-to-brain:1.0.11 --tag jeffryklew/add-wrinkles-to-brain:latest .
+# $ docker image build --rm --build-arg BUILD_DATE=$(date -u +'%FT%TZ') \
+# --tag jeffryklew/add-wrinkles-to-brain:1.0.11 \
+# --tag jeffryklew/add-wrinkles-to-brain:latest .
 #
 # Push image to dockerhub with:
 # $ docker image push --all-tags jeffryklew/add-wrinkles-to-brain
@@ -11,10 +13,11 @@
 
 FROM ubuntu:22.10
 
-# Install gcc, CMake, and Google Test
+# Install gcc, gdb, CMake, and Google Test
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
+    gdb \
     googletest \
     && rm -rf /var/lib/apt/lists/*
 
@@ -41,8 +44,8 @@ COPY . /home/add-wrinkles-to-brain
 
 # Build source code
 WORKDIR /home/add-wrinkles-to-brain
-RUN cmake -S . -B build \
-    && cmake --build build -j 2
+RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
+    && cmake --build build -j 3
 
 # Run tests upon container start
 CMD [ "ctest", "--output-on-failure", "--test-dir", "build" ]
