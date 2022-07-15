@@ -20,6 +20,7 @@ set(
   "bubble_sort"
   "comparator"
   "count_triplets"
+  "fraudulent_activity_notifications"
   "mark_and_toys"
   "minimum_swaps_2"
   "new_year_chaos"
