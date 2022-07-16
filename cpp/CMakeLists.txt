@@ -16,18 +16,18 @@ enable_testing()
 
 set(
   hr_puzzles
-  "alternating_characters"
-  "bubble_sort"
-  "comparator"
-  "count_triplets"
-  "counting_sort"
-  "fraudulent_activity_notifications"
-  "mark_and_toys"
-  "minimum_swaps_2"
-  "new_year_chaos"
-  "ransom_note"
-  "sherlock_and_anagrams"
-  "two_strings"
+  "arrays/minimum_swaps_2"
+  "arrays/new_year_chaos"
+  "maps/count_triplets"
+  "maps/ransom_note"
+  "maps/sherlock_and_anagrams"
+  "maps/two_strings"
+  "sorting/bubble_sort"
+  "sorting/comparator"
+  "sorting/counting_sort"
+  "sorting/fraudulent_activity_notifications"
+  "sorting/mark_and_toys"
+  "string_manipulation/alternating_characters"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
