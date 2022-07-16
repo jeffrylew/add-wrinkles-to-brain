@@ -14,37 +14,15 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-set(
-  hr_puzzles
-  "arrays/2d_array_ds"
-  "arrays/minimum_swaps_2"
-  "arrays/new_year_chaos"
-  "maps/count_triplets"
-  "maps/ransom_note"
-  "maps/sherlock_and_anagrams"
-  "maps/two_strings"
-  "sorting/bubble_sort"
-  "sorting/comparator"
-  "sorting/counting_sort"
-  "sorting/fraudulent_activity_notifications"
-  "sorting/mark_and_toys"
-  "string_manipulation/alternating_characters"
-)
-
-foreach(puzzle IN ITEMS ${hr_puzzles})
-  add_executable(
-    ${puzzle}_test
-    ${puzzle}.cpp
-  )
-
-  target_link_libraries(
-    ${puzzle}_test
-    gtest_main
-  )
-endforeach()
-
-include(GoogleTest)
-
-foreach(puzzle IN ITEMS ${hr_puzzles})
-  gtest_discover_tests(${puzzle}_test)
-endforeach()
+add_subdirectory(arrays)
+# add_subdirectory(dynamic_programming)
+# add_subdirectory(graphs)
+# add_subdirectory(greedy_algorithms)
+# add_subdirectory(linked_lists)
+add_subdirectory(maps)
+# add_subdirectory(miscellaneous)
+# add_subdirectory(recursion)
+# add_subdirectory(search)
+add_subdirectory(sorting)
+# add_subdirectory(stacks_and_queues)
+add_subdirectory(string_manipulation)
