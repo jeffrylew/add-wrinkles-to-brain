@@ -44,7 +44,7 @@ ARG VERSION
 LABEL org.opencontainers.image.version=${VERSION}
 
 # Copy source code from repo
-COPY . /home/add-wrinkles-to-brain
+COPY --chown=jklewuser:jklewgroup . /home/add-wrinkles-to-brain
 
 # Build source code
 WORKDIR /home/add-wrinkles-to-brain/cpp
