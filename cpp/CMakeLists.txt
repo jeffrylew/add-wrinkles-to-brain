@@ -16,6 +16,7 @@ enable_testing()
 
 set(
   hr_puzzles
+  "arrays/2d_array_ds"
   "arrays/minimum_swaps_2"
   "arrays/new_year_chaos"
   "maps/count_triplets"
