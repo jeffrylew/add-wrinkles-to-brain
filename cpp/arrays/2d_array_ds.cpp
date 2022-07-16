@@ -4,7 +4,7 @@
 #include <array>
 #include <vector>
 
-static int hourglassSum(vector<vector<int>> arr)
+static int hourglassSum(std::vector<std::vector<int>> arr)
 {
     std::array<int, 16> sums {};
     
