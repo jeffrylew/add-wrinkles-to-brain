@@ -47,7 +47,7 @@ LABEL org.opencontainers.image.version=${VERSION}
 COPY . /home/add-wrinkles-to-brain
 
 # Build source code
-WORKDIR /home/add-wrinkles-to-brain
+WORKDIR /home/add-wrinkles-to-brain/cpp
 RUN cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug \
     && cmake --build build -j 3
 
