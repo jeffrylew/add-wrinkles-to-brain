@@ -7,7 +7,7 @@
 //! @brief Count the number of swaps made using bubble sort
 //! @param[in] a Vector of ints passed by value
 //! @return std::tuple of number of swaps, first element, and last element
-std::tuple<int, int, int> countSwaps(std::vector<int> a)
+static std::tuple<int, int, int> countSwaps(std::vector<int> a)
 {
     // Number of swaps
     int numSwaps {};
@@ -30,7 +30,7 @@ std::tuple<int, int, int> countSwaps(std::vector<int> a)
     
     return {numSwaps, a.front(), a.back()};
 
-} // std::tuple<int, int, int> countSwaps( ...
+} // static std::tuple<int, int, int> countSwaps( ...
 
 // Try Test case 0
 TEST(BubbleSortTest, TestCase0) {
