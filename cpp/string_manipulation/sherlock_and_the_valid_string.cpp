@@ -2,8 +2,11 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <iterator>
 #include <numeric>
 #include <string>
+#include <vector>
 
 //! @brief Get index in array corresponding to c
 //! @param[in] c Lowercase char with ascii value in [97, 122]
@@ -138,11 +141,84 @@ static std::string isValidSecondAttempt(std::string s)
 
 } // static std::string isValidSecondAttempt( ...
 
+//! @brief Check if values in input are equal or could be if one was decremented
+//! @param[in] non_zero_counts Reference to vector of non-zero char counts
+//! @pre non_zero_counts is not empty and not all zeros
+//! @return True if all values are equal or could be upon decrement, else false
+static bool areCountsEqual(const std::vector<int>& non_zero_counts)
+{
+    if (std::all_of(non_zero_counts.cbegin(),
+                    non_zero_counts.cend(),
+                    [=](int count) -> bool {
+                        return count == non_zero_counts.front();
+                    }))
+    {
+        return true;
+    }
+    
+    // non_zero_counts will have max size of 26 so
+    // copying vector repeatedly isn't too bad 
+    for (std::size_t i = 0; i < non_zero_counts.size(); ++i)
+    {
+        // Vector where each element will be decremented by one
+        // and checked for uniformity after. If the latter causes
+        // the element to become zero then remove it
+        auto decremented_count = non_zero_counts;
+        if (--decremented_count.at(i) == 0)
+        {
+            decremented_count.erase(
+                std::next(decremented_count.begin(),
+                          static_cast<std::ptrdiff_t>(i)));
+        }
+        
+        if (std::all_of(decremented_count.cbegin(),
+                        decremented_count.cend(),
+                        [=](int count) -> bool {
+                            return count == decremented_count.front();
+                        }))
+        {
+            return true;
+        }
+    }
+    
+    return false;
+    
+} // static bool areCountsEqual( ...
+
+//! @brief Third attempt solution is inefficient but passes all test cases
+static std::string isValidThirdAttempt(std::string s)
+{
+    // Array of lowercase character counts
+    // ascii characters a to z map to indices 0 to 25
+    std::array<int, 26ULL> char_counts {{}};
+    
+    // Populate char_counts with character counts in s
+    for (const auto c : s)
+    {
+        ++char_counts.at(getIdx(c));
+    }
+    
+    // Copy all non-zero counts to a vector
+    std::vector<int> non_zero_counts {};
+    for (const auto count : char_counts)
+    {
+        if (count != 0)
+        {
+            non_zero_counts.emplace_back(count);
+        }
+    }
+    
+    return areCountsEqual(non_zero_counts) ? "YES" : "NO";
+
+} // static std::string isValidThirdAttempt( ...
+
 // Test case 0
 TEST(IsValidTest, TestCase0) {
     EXPECT_EQ("NO", isValidFirstAttempt("aabbcd"));
 
     EXPECT_EQ("NO", isValidSecondAttempt("aabbcd"));
+
+    EXPECT_EQ("NO", isValidThirdAttempt("aabbcd"));
 }
 
 // Test case 1
@@ -150,6 +226,8 @@ TEST(IsValidTest, TestCase1) {
     EXPECT_EQ("NO", isValidFirstAttempt("aabbccddeefghi"));
 
     EXPECT_EQ("NO", isValidSecondAttempt("aabbccddeefghi"));
+
+    EXPECT_EQ("NO", isValidThirdAttempt("aabbccddeefghi"));
 }
 
 // Test case 4, first solution failed this along with Test cases 7, 13, and 16
@@ -157,6 +235,8 @@ TEST(IsValidTest, TestCase4) {
     EXPECT_NE("YES", isValidFirstAttempt("aabbc"));
 
     EXPECT_EQ("YES", isValidSecondAttempt("aabbc"));
+
+    EXPECT_EQ("YES", isValidThirdAttempt("aabbc"));
 }
 
 // Test case 7, first and second attempt solutions fail this
@@ -168,6 +248,8 @@ TEST(IsValidTest, TestCase7) {
     EXPECT_NE("YES", isValidFirstAttempt(test_case_7_str));
 
     EXPECT_NE("YES", isValidSecondAttempt(test_case_7_str));
+
+    EXPECT_EQ("YES", isValidThirdAttempt(test_case_7_str));
 }
 
 // Test case 18
@@ -175,4 +257,6 @@ TEST(IsValidTest, TestCase18) {
     EXPECT_EQ("YES", isValidFirstAttempt("abcdefghhgfedecba"));
 
     EXPECT_EQ("YES", isValidSecondAttempt("abcdefghhgfedecba"));
+
+    EXPECT_EQ("YES", isValidThirdAttempt("abcdefghhgfedecba"));
 }
