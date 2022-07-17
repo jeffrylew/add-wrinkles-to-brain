@@ -212,6 +212,54 @@ static std::string isValidThirdAttempt(std::string s)
 
 } // static std::string isValidThirdAttempt( ...
 
+static std::string isValidDiscussionSolution(std::string s)
+{
+    // Array of lowercase character counts
+    // ascii characters a to z map to indices 0 to 25
+    std::array<int, 26ULL> char_counts {{}};
+    
+    // Populate char_counts with character counts in s
+    for (const auto c : s)
+    {
+        ++char_counts.at(getIdx(c));
+    }
+
+    // Sort character counts (ascending)
+    std::sort(char_counts.begin(), char_counts.end());
+
+    // Find first non-zero count
+    auto non_zero_count_it = std::find_if(char_counts.cbegin(),
+                                          char_counts.cend(),
+                                          [](int count) -> bool {
+                                              return count != 0;
+                                          });
+    
+    // Get minimum and maximum character counts
+    const auto min_count = *non_zero_count_it;
+    const auto max_count = char_counts.back();
+    if (min_count == max_count)
+    {
+        return "YES";
+    }
+    
+    // Remove one char at highest frequency. E.g. char_counts = [0 0 0 6 6 6 7]
+    // Following case would not be valid char_counts = [0 0 0 6 6 6 7 7]
+    if (max_count - min_count == 1 && max_count > char_counts.at(24ULL))
+    {
+        return "YES";
+    }
+    
+    // Remove one char at lowest frequency. E.g. char_counts = [0 0 0 1 6 6 6]
+    // Following case would not be valid char_counts = [0 0 0 6 7 7 7 7]
+    if (min_count == 1 && *(++non_zero_count_it) == max_count)
+    {
+        return "YES";
+    }
+
+    return "NO";
+
+} // static std::string isValidDiscussionSolution( ...
+
 // Test case 0
 TEST(IsValidTest, TestCase0) {
     EXPECT_EQ("NO", isValidFirstAttempt("aabbcd"));
@@ -219,6 +267,8 @@ TEST(IsValidTest, TestCase0) {
     EXPECT_EQ("NO", isValidSecondAttempt("aabbcd"));
 
     EXPECT_EQ("NO", isValidThirdAttempt("aabbcd"));
+
+    EXPECT_EQ("NO", isValidDiscussionSolution("aabbcd"));
 }
 
 // Test case 1
@@ -228,6 +278,8 @@ TEST(IsValidTest, TestCase1) {
     EXPECT_EQ("NO", isValidSecondAttempt("aabbccddeefghi"));
 
     EXPECT_EQ("NO", isValidThirdAttempt("aabbccddeefghi"));
+
+    EXPECT_EQ("NO", isValidDiscussionSolution("aabbccddeefghi"));
 }
 
 // Test case 4, first solution failed this along with Test cases 7, 13, and 16
@@ -237,6 +289,8 @@ TEST(IsValidTest, TestCase4) {
     EXPECT_EQ("YES", isValidSecondAttempt("aabbc"));
 
     EXPECT_EQ("YES", isValidThirdAttempt("aabbc"));
+
+    EXPECT_EQ("YES", isValidDiscussionSolution("aabbc"));
 }
 
 // Test case 7, first and second attempt solutions fail this
@@ -250,6 +304,8 @@ TEST(IsValidTest, TestCase7) {
     EXPECT_NE("YES", isValidSecondAttempt(test_case_7_str));
 
     EXPECT_EQ("YES", isValidThirdAttempt(test_case_7_str));
+
+    EXPECT_EQ("YES", isValidDiscussionSolution(test_case_7_str));
 }
 
 // Test case 18
@@ -259,4 +315,6 @@ TEST(IsValidTest, TestCase18) {
     EXPECT_EQ("YES", isValidSecondAttempt("abcdefghhgfedecba"));
 
     EXPECT_EQ("YES", isValidThirdAttempt("abcdefghhgfedecba"));
+    
+    EXPECT_EQ("YES", isValidDiscussionSolution("abcdefghhgfedecba"));
 }
