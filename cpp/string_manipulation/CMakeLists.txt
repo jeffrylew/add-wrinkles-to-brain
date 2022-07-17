@@ -2,6 +2,7 @@ set(
   hr_puzzles
   "alternating_characters"
   "making_anagrams"
+  "sherlock_and_the_valid_string"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
