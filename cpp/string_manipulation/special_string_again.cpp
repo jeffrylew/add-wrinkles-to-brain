@@ -113,22 +113,92 @@ static long substrCountFirstAttempt(int n, std::string s)
 
 } // static long substrCountFirstAttempt( ...
 
+//! @brief Solution from discussion section
+static long substrCountDiscussionSolution(int n, std::string s)
+{
+    // Total number of special substrings
+    long n_special_substr {};
+
+    // Keep count of character repetitions in string while maintaining order
+    std::vector<std::pair<char, int>> char_counts {};
+
+    // Count per character in string (> 1 if character has repeated sequence)
+    int count_per_char {};
+
+    // Current character, initialized to null character
+    char curr_char {'\0'};
+
+    // 1st pass builds vector of characters and their counts
+    for (const auto c : s)
+    {
+        if (c == curr_char)
+        {
+            ++count_per_char;
+        }
+        else
+        {
+            if (curr_char != '\0')
+            {
+                char_counts.emplace_back(curr_char, count_per_char);
+            }
+            curr_char      = c;
+            count_per_char = 1;
+        }
+
+    } // for (const auto c : s)
+
+    char_counts.emplace_back(curr_char, count_per_char);
+
+    // 2nd pass accounts for substring combinations where all letters are same
+    // For a string with n repeated chars, can make n*(n + 1)/2 substrings
+    for (const auto& char_count : char_counts)
+    {
+        n_special_substr += (char_count.second * (char_count.second + 1)) / 2;
+    }
+    
+    // 3rd pass accounts for substrings where all chars are same except middle
+    for (std::size_t i = 1ULL; i < char_counts.size() - 1ULL; ++i)
+    {
+        const auto lhs_char  = char_counts.at(i - 1ULL).first;
+        const auto rhs_char  = char_counts.at(i + 1ULL).first;
+        const auto lhs_count = char_counts.at(i - 1ULL).second;
+        const auto rhs_count = char_counts.at(i + 1ULL).second;
+        const auto mid_count = char_counts.at(i).second;
+
+        if (lhs_char == rhs_char && mid_count == 1)
+        {
+            n_special_substr += std::min(lhs_count, rhs_count);
+        }
+    }
+    
+    return n_special_substr;
+
+} // static long substrCountDiscussionSolution( ...
+
 // Test sample input given in problem description
 TEST(SubstrCountTest, SampleInput) {
     EXPECT_EQ(12L, substrCountFirstAttempt(8, "mnonopoo"));
+
+    EXPECT_EQ(12L, substrCountDiscussionSolution(8, "mnonopoo"));
 }
 
 // Test case 0
 TEST(SubstrCountTest, TestCase0) {
     EXPECT_EQ(7L, substrCountFirstAttempt(5, "asasd"));
+
+    EXPECT_EQ(7L, substrCountDiscussionSolution(5, "asasd"));
 }
 
 // Test case 1
 TEST(SubstrCountTest, TestCase1) {
     EXPECT_EQ(10L, substrCountFirstAttempt(7, "abcbaba"));
+
+    EXPECT_EQ(10L, substrCountDiscussionSolution(7, "abcbaba"));
 }
 
 // Test case 16
 TEST(SubstrCountTest, TestCase16) {
     EXPECT_EQ(10L, substrCountFirstAttempt(4, "aaaa"));
+
+    EXPECT_EQ(10L, substrCountDiscussionSolution(4, "aaaa"));
 }
