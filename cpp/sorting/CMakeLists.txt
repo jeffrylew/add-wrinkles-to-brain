@@ -5,6 +5,7 @@ set(
   "counting_sort"
   "fraudulent_activity_notifications"
   "mark_and_toys"
+  "selection_sort"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
