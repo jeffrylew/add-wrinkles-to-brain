@@ -2,6 +2,7 @@ set(
   hr_puzzles
   "greedy_florist"
   "luck_balance"
+  "max_min"
   "minimum_absolute_difference_in_an_array"
 )
 
