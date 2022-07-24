@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "ice_cream_parlor"
+  "swap_nodes_algo"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
