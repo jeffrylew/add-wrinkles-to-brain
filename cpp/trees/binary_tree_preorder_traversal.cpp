@@ -7,31 +7,6 @@
 #include <tuple>
 #include <vector>
 
-static std::vector<int> preorderTraversalRecursive(LC::TreeNode* root)
-{
-    //! @details Referenced http://faculty.cs.niu.edu/~mcmahon/CS241/Notes/
-    //!          Data_Structures/binary_tree_traversals.html
-
-    // Vector to hold preorder traversal across function calls
-    static std::vector<int> traversal {};
-
-    // Need to "visit" a node then traverse both its subtrees
-    if (nullptr != root)
-    {
-        // First, visit the node pointed to by input
-        traversal.emplace_back(root->val_);
-
-        // Traverse left subtree first
-        std::ignore = preorderTraversalRecursive(root->left_);
-
-        // Traverse right subtree last
-        std::ignore = preorderTraversalRecursive(root->right_);
-    }
-    
-    return traversal;
-
-} // static std::vector<int> preorderTraversalRecursive( ...
-
 static std::vector<int> preorderTraversalIterative(LC::TreeNode* root)
 {
     //! @details Referenced http://faculty.cs.niu.edu/~mcmahon/CS241/Notes/
@@ -73,6 +48,31 @@ static std::vector<int> preorderTraversalIterative(LC::TreeNode* root)
 
 } // static std::vector<int> preorderTraversalIterative( ...
 
+static std::vector<int> preorderTraversalRecursive(LC::TreeNode* root)
+{
+    //! @details Referenced http://faculty.cs.niu.edu/~mcmahon/CS241/Notes/
+    //!          Data_Structures/binary_tree_traversals.html
+
+    // Vector to hold preorder traversal across function calls
+    static std::vector<int> traversal {};
+
+    // Need to "visit" a node then traverse both its subtrees
+    if (nullptr != root)
+    {
+        // First, visit the node pointed to by input
+        traversal.emplace_back(root->val_);
+
+        // Traverse left subtree first
+        std::ignore = preorderTraversalRecursive(root->left_);
+
+        // Traverse right subtree last
+        std::ignore = preorderTraversalRecursive(root->right_);
+    }
+    
+    return traversal;
+
+} // static std::vector<int> preorderTraversalRecursive( ...
+
 //! @brief LC discussion solution (iterative) using stack
 //! @param[in] root Pointer to root TreeNode
 //! @return Vector containing preorder traversal of integer node values
@@ -112,7 +112,7 @@ static std::vector<int> preorderTraversalLCIterative(LC::TreeNode* root)
 } // static std::vector<int> preorderTraversalLCIterative( ...
 
 //! @brief Helper function for LC recursive discussion solution
-//! @param[in] root       Pointer to root TreeNode
+//! @param[in]  root      Pointer to root TreeNode
 //! @param[out] node_vals Reference to output vector of node values
 static void LCRecursiveHelper(LC::TreeNode* root, std::vector<int>& node_vals)
 {
@@ -148,7 +148,7 @@ static std::vector<int> preorderTraversalLCMorris(LC::TreeNode* root)
 
     std::vector<int> node_vals {};
 
-    while(nullptr != root)
+    while (nullptr != root)
     {
         if (nullptr != root->left_)
         {
@@ -181,7 +181,7 @@ static std::vector<int> preorderTraversalLCMorris(LC::TreeNode* root)
 
         } // else -> if (nullptr != root->left_)
 
-    } // while(nullptr != root)
+    } // while (nullptr != root)
 
     return node_vals;
 
@@ -202,15 +202,15 @@ TEST(PreorderTraversalTest, SampleInput) {
     // Expected preorder traversal
     const std::vector<int> expected_vec {1, 2, 3};
 
-    auto recursive_vec = preorderTraversalRecursive(&root);
-    EXPECT_TRUE(std::equal(expected_vec.cbegin(),
-                           expected_vec.cend(),
-                           recursive_vec.cbegin()));
-
     auto iterative_vec = preorderTraversalIterative(&root);
     EXPECT_TRUE(std::equal(expected_vec.cbegin(),
                            expected_vec.cend(),
                            iterative_vec.cbegin()));
+
+    auto recursive_vec = preorderTraversalRecursive(&root);
+    EXPECT_TRUE(std::equal(expected_vec.cbegin(),
+                           expected_vec.cend(),
+                           recursive_vec.cbegin()));
 
     iterative_vec = preorderTraversalLCIterative(&root);
     EXPECT_TRUE(std::equal(expected_vec.cbegin(),
@@ -230,8 +230,8 @@ TEST(PreorderTraversalTest, SampleInput) {
 
 // Test nullptr root input
 TEST(PreorderTraversalTest, NullRoot) {
-    EXPECT_TRUE(preorderTraversalRecursive(nullptr).empty());
     EXPECT_TRUE(preorderTraversalIterative(nullptr).empty());
+    EXPECT_TRUE(preorderTraversalRecursive(nullptr).empty());
     EXPECT_TRUE(preorderTraversalLCIterative(nullptr).empty());
     EXPECT_TRUE(preorderTraversalLCRecursive(nullptr).empty());
     EXPECT_TRUE(preorderTraversalLCMorris(nullptr).empty());
