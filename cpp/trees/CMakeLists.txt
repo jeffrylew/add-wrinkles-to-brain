@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "binary_tree_inorder_traversal"
   "binary_tree_preorder_traversal"
 )
 
