@@ -69,6 +69,54 @@ static std::vector<std::vector<int>> levelOrderIterative(LC::TreeNode* root)
 
 } // static std::vector<std::vector<int>> levelOrderIterative( ...
 
+//! Helper function for recursive solution
+//! @param[in]     root        Pointer to root TreeNode
+//! @param[in]     depth       Current depth in tree
+//! @param[in,out] level_order Reference to output vector of vectors
+static void RecursiveHelper(LC::TreeNode*                  root,
+                            std::size_t                    depth,
+                            std::vector<std::vector<int>>& level_order)
+{
+    if (nullptr == root)
+    {
+        return;
+    }
+
+    if (depth == level_order.size())
+    {
+        // Prepare output vector for another level
+        level_order.resize(depth + 1ULL);
+    }
+    
+    level_order.at(depth).emplace_back(root->val_);
+    RecursiveHelper(root->left_, depth + 1ULL, level_order);
+    RecursiveHelper(root->right_, depth + 1ULL, level_order);
+
+} // static void RecursiveHelper( ...
+
+//! @brief Recursive solution from discussion section
+//! @param[in] root Pointer to root TreeNode
+//! @return Level order traversal as a vector of level values (vector)
+static std::vector<std::vector<int>> levelOrderLCRecursive(LC::TreeNode* root)
+{
+    //! @details Referenced
+    //!          https://leetcode.com/problems/binary-tree-level-order-traversal
+    //!          /discuss/33468/One-of-C%2B%2B-solutions-(preorder)
+    //!
+    //!          Implements preorder traversal to achieve level order traversal.
+    //!          Adds node's value to vector of current level values then looks
+    //!          at its left and right children.
+    //!
+    //!          For a lean tree (most non-leaf nodes have only one child), this
+    //!          DFS approach consumes O(n) memory. For a near complete tree
+    //!          (most non-leaf nodes have two children), this DFS approach
+    //!          costs O(log n) memory.
+
+    std::vector<std::vector<int>> level_order {};
+    RecursiveHelper(root, 0, level_order);
+    return level_order;
+}
+
 // Try sample input given in problem description
 TEST(LevelOrderTraversalTest, SampleInput) {
     // Create binary tree
@@ -105,5 +153,20 @@ TEST(LevelOrderTraversalTest, SampleInput) {
     EXPECT_TRUE(std::equal(level_order.back().cbegin(),
                            level_order.back().cend(),
                            iterative.back().cbegin()));
+    
+    const auto recursive = levelOrderLCRecursive(&root);
+    EXPECT_EQ(level_order.size(), recursive.size());
+
+    EXPECT_TRUE(std::equal(level_order.front().cbegin(),
+                           level_order.front().cend(),
+                           recursive.front().cbegin()));
+
+    EXPECT_TRUE(std::equal(level_order.at(1ULL).cbegin(),
+                           level_order.at(1ULL).cend(),
+                           recursive.at(1ULL).cbegin()));
+
+    EXPECT_TRUE(std::equal(level_order.back().cbegin(),
+                           level_order.back().cend(),
+                           recursive.back().cbegin()));
 
 } // TEST(LevelOrderTraversalTest, SampleInput) { ...
