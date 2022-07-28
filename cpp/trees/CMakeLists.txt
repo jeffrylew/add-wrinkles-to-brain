@@ -4,6 +4,7 @@ set(
   "binary_tree_level_order_traversal"
   "binary_tree_postorder_traversal"
   "binary_tree_preorder_traversal"
+  "height_of_a_binary_tree"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
