@@ -33,6 +33,8 @@ static std::pair<std::size_t, std::size_t> whatFlavors(std::vector<int> cost,
     } // for (std::size_t i = 0; i < cost.size(); ++i)
     
     // There will always be a unique solution so nothing to do here
+    // But should silence -Wreturn-type control reaches end of non-void function
+    return {0, 0};
 
 } // static std::pair<std::size, std::size_t> whatFlavors( ...
 
