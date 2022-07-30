@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "ice_cream_parlor"
+  "pairs"
   "swap_nodes_algo"
 )
 
