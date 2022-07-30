@@ -3,6 +3,7 @@ set(
   "ice_cream_parlor"
   "pairs"
   "swap_nodes_algo"
+  "triple_sum"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
