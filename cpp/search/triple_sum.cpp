@@ -69,6 +69,54 @@ static long tripletsFirstAttempt(std::vector<int> a,
 
 } // static long tripletsFirstAttempt( ...
 
+//! @brief Discussion solution
+static long tripletsDiscussionSolution(std::vector<int> a,
+                                       std::vector<int> b,
+                                       std::vector<int> c)
+{
+    //! @details Discussion solution from
+    //!          https://www.hackerrank.com/challenges/triple-sum/forum
+
+    // Total number of distinct triplets
+    long n_triplets {};
+    
+    // Sort vectors before removing duplicates and resizing
+    // See https://stackoverflow.com/questions/1041620/
+    // whats-the-most-efficient-way-to-erase-duplicates-and-sort-a-vector
+    std::sort(a.begin(), a.end());
+    std::sort(b.begin(), b.end());
+    std::sort(c.begin(), c.end());
+
+    a.erase(std::unique(a.begin(), a.end()), a.end());
+    b.erase(std::unique(b.begin(), b.end()), b.end());
+    c.erase(std::unique(c.begin(), c.end()), c.end());
+
+    std::size_t idx_a {};
+    std::size_t idx_b {};
+    std::size_t idx_c {};
+
+    while (idx_b < b.size())
+    {
+        while (idx_a < a.size() && a.at(idx_a) <= b.at(idx_b))
+        {
+            ++idx_a;
+        }
+        
+        while (idx_c < c.size() && c.at(idx_c) <= b.at(idx_b))
+        {
+            ++idx_c;
+        }
+
+        n_triplets += static_cast<long>(idx_a * idx_c);
+
+        ++idx_b;
+
+    } // while (idx_b < b.size())
+
+    return n_triplets;
+
+} // static long tripletsDiscussionSolution( ...
+
 // Try sample input given in problem description
 TEST(TripletsTest, SampleInput) {
     EXPECT_EQ(4L, tripletsFirstAttempt({3, 5, 7}, {3, 6}, {4, 6, 9}));
