@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "ice_cream_parlor"
+  "minimum_time_required"
   "pairs"
   "swap_nodes_algo"
   "triple_sum"
