@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "balanced_brackets"
+  "a_tale_of_two_stacks"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
