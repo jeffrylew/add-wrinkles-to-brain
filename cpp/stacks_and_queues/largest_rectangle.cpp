@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-//! @brief Discussion solution for largest rectangle
+//! @brief Discussion solution for largest rectangle using a stack
 //! @param[in] h Vector of building heights
 //! @return Area of largest rectangle as a long
 static long largestRectangleDiscussionSolution(std::vector<int> h)
@@ -18,6 +18,12 @@ static long largestRectangleDiscussionSolution(std::vector<int> h)
     //!
     //!          Same problem as
     //!          https://leetcode.com/problems/largest-rectangle-in-histogram/
+    //!
+    //!          Time complexity: O(n)
+    //!            - Only iterated through vector h once
+    //!            - Pushed and popped each element onto/from stack once
+    //!          Space complexity: O(n)
+    //!            - Stack could contain up to size of vector h elements
 
     long max_area {};
     
