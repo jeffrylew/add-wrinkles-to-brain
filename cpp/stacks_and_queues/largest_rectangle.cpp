@@ -94,8 +94,6 @@ static long largestRectangleLCSolution(std::vector<int> h)
     //!
     //!          Time complexity: O(n)
     //!          Space complexity: O(n)
-    //!
-    //!          Currently segfaults, need to debug
 
     if (h.empty())
     {
@@ -122,16 +120,18 @@ static long largestRectangleLCSolution(std::vector<int> h)
         lessFromLeft.at(i) = p;
     }
     
-    for (std::size_t i = h.size() - 2ULL; i >= 0; --i)
+    // Don't use std::size_t here since i will become negative
+    for (int i = static_cast<int>(h.size()) - 2; i >= 0; --i)
     {
-        int p = static_cast<int>(i) + 1;
+        int p = i + 1;
 
         while (p < static_cast<int>(h.size())
-               && h.at(static_cast<std::size_t>(p)) >= h.at(i))
+               && h.at(static_cast<std::size_t>(p))
+               >= h.at(static_cast<std::size_t>(i)))
         {
             p = lessFromRight.at(static_cast<std::size_t>(p));
         }
-        lessFromRight.at(i) = p;
+        lessFromRight.at(static_cast<std::size_t>(i)) = p;
     }
     
     long max_area {};
@@ -151,23 +151,23 @@ static long largestRectangleLCSolution(std::vector<int> h)
 // Try sample input given in problem description
 TEST(LargestRectangleTest, SampleInput) {
     EXPECT_EQ(6L, largestRectangleDiscussionSolution({3, 2, 3}));
-    // EXPECT_EQ(6L, largestRectangleLCSolution({3, 2, 3}));
+    EXPECT_EQ(6L, largestRectangleLCSolution({3, 2, 3}));
 }
 
 // Test case 0
 TEST(LargestRectangleTest, TestCase0) {
     EXPECT_EQ(9L, largestRectangleDiscussionSolution({1, 2, 3, 4, 5}));
-    // EXPECT_EQ(9L, largestRectangleLCSolution({1, 2, 3, 4, 5}));
+    EXPECT_EQ(9L, largestRectangleLCSolution({1, 2, 3, 4, 5}));
 }
 
 // Test case 14
 TEST(LargestRectangleTest, TestCase14) {
     EXPECT_EQ(18L, largestRectangleDiscussionSolution({1, 3, 5, 9, 11}));
-    // EXPECT_EQ(18L, largestRectangleLCSolution({1, 3, 5, 9, 11}));
+    EXPECT_EQ(18L, largestRectangleLCSolution({1, 3, 5, 9, 11}));
 }
 
 // Test case 15
 TEST(LargestRectangleTest, TestCase15) {
     EXPECT_EQ(50L, largestRectangleDiscussionSolution({11, 11, 10, 10, 10}));
-    // EXPECT_EQ(50L, largestRectangleLCSolution({11, 11, 10, 10, 10}));
+    EXPECT_EQ(50L, largestRectangleLCSolution({11, 11, 10, 10, 10}));
 }
