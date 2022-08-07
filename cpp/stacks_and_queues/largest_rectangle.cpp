@@ -82,24 +82,92 @@ static long largestRectangleDiscussionSolution(std::vector<int> h)
 
     return max_area;
 
-} // static long largestRectangleDiscussion Solution( ...
+} // static long largestRectangleDiscussionSolution( ...
+
+//! @brief LC discussion solution for largest rectangle without a stack
+//! @param[in] h Vector of building heights
+//! @return Area of largest rectangle as a long
+static long largestRectangleLCSolution(std::vector<int> h)
+{
+    //! @details https://leetcode.com/problems/largest-rectangle-in-histogram/
+    //!          discuss/28902/5ms-O(n)-Java-solution-explained-(beats-96)
+    //!
+    //!          Time complexity: O(n)
+    //!          Space complexity: O(n)
+    //!
+    //!          Currently segfaults, need to debug
+
+    if (h.empty())
+    {
+        return 0;
+    }
+
+    // Index of first left building with height h[l] < h[i]
+    std::vector<int> lessFromLeft(h.size());
+    
+    // Index of first right building with height h[r] < h[i]
+    std::vector<int> lessFromRight(h.size());
+
+    lessFromLeft.front() = -1;
+    lessFromRight.back() = static_cast<int>(h.size());
+
+    for (std::size_t i = 1ULL; i < h.size(); ++i)
+    {
+        int p = static_cast<int>(i) - 1;
+
+        while (p >= 0 && h.at(static_cast<std::size_t>(p)) >= h.at(i))
+        {
+            p = lessFromLeft.at(static_cast<std::size_t>(p));
+        }
+        lessFromLeft.at(i) = p;
+    }
+    
+    for (std::size_t i = h.size() - 2ULL; i >= 0; --i)
+    {
+        int p = static_cast<int>(i) + 1;
+
+        while (p < static_cast<int>(h.size())
+               && h.at(static_cast<std::size_t>(p)) >= h.at(i))
+        {
+            p = lessFromRight.at(static_cast<std::size_t>(p));
+        }
+        lessFromRight.at(i) = p;
+    }
+    
+    long max_area {};
+
+    for (std::size_t i = 0; i < h.size(); ++i)
+    {
+        const auto area =
+            static_cast<long>(h.at(i))
+            * static_cast<long>(lessFromRight.at(i) - lessFromLeft.at(i) - 1);
+        max_area = std::max(max_area, area);
+    }
+    
+    return max_area;
+
+} // static long largestRectangleLCSolution( ...
 
 // Try sample input given in problem description
 TEST(LargestRectangleTest, SampleInput) {
     EXPECT_EQ(6L, largestRectangleDiscussionSolution({3, 2, 3}));
+    // EXPECT_EQ(6L, largestRectangleLCSolution({3, 2, 3}));
 }
 
 // Test case 0
 TEST(LargestRectangleTest, TestCase0) {
     EXPECT_EQ(9L, largestRectangleDiscussionSolution({1, 2, 3, 4, 5}));
+    // EXPECT_EQ(9L, largestRectangleLCSolution({1, 2, 3, 4, 5}));
 }
 
 // Test case 14
 TEST(LargestRectangleTest, TestCase14) {
     EXPECT_EQ(18L, largestRectangleDiscussionSolution({1, 3, 5, 9, 11}));
+    // EXPECT_EQ(18L, largestRectangleLCSolution({1, 3, 5, 9, 11}));
 }
 
 // Test case 15
 TEST(LargestRectangleTest, TestCase15) {
     EXPECT_EQ(50L, largestRectangleDiscussionSolution({11, 11, 10, 10, 10}));
+    // EXPECT_EQ(50L, largestRectangleLCSolution({11, 11, 10, 10, 10}));
 }
