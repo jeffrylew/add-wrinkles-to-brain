@@ -56,6 +56,38 @@ static SinglyLinkedListNode* insertNodeAtPosition(
 
 } // static SinglyLinkedListNode* insertNodeAtPosition( ...
 
+//! @brief Solution from discussion section
+//! @param[in] llist    Pointer to list head
+//! @param[in] data     Data for new node as an int
+//! @param[in] position Position to insert new node, zero based indexing
+//! @return Pointer to head of revised list
+static SinglyLinkedListNode* insertNodeAtPositionDiscussionSolution(
+    SinglyLinkedListNode* llist,
+    int                   data,
+    int                   position)
+{
+    auto* new_node = new SinglyLinkedListNode {data};
+    auto  current  = llist;
+
+    if (position == 0)
+    {
+        new_node->next = llist;
+        return new_node;
+    }
+    
+    int idx {};
+    while (++idx < position)
+    {
+        current = current->next;
+    }
+
+    new_node->next = current->next;
+    current->next  = new_node;
+
+    return llist;
+
+} // static SinglyLinkedListNode* insertNodeAtPositionDiscussionSolution( ...
+
 // Try sample input given in problem description
 TEST(InsertNodeTest, SampleInput) {
     // Initialize SinglyLinkedList
@@ -84,6 +116,34 @@ TEST(InsertNodeTest, SampleInput) {
 
     // Free allocated memory
     free_singly_linked_list(llist_head);
+
+    // Now test discussion solution
+
+    // Initialize SinglyLinkedList
+    SinglyLinkedList* llist2 = new SinglyLinkedList();
+    llist2->insert_node(1);
+    llist2->insert_node(2);
+    llist2->insert_node(3);
+
+    auto llist_head2 = insertNodeAtPositionDiscussionSolution(
+        llist2->head, //
+        data,         //
+        pos);
+
+    // Create pointer for iterating
+    auto iter2 = llist_head2;
+
+    // Iterate to newly inserted node
+    for (int i = 0; i < pos; ++i)
+    {
+        iter2 = iter2->next;
+    }
+    
+    EXPECT_EQ(data, iter2->data);
+    EXPECT_EQ(3, iter2->next->data);
+
+    // Free allocated memory
+    free_singly_linked_list(llist_head2);
 }
 
 // Test case 0
