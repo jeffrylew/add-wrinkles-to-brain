@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "count_triplets"
+  "frequency_queries"
   "ransom_note"
   "sherlock_and_anagrams"
   "two_strings"
