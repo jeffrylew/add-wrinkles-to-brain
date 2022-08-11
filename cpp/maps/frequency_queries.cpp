@@ -56,6 +56,90 @@ static std::vector<int> freqQueryFirstAttempt(
 
 } // static std::vector<int> freqQueryFirstAttempt( ...
 
+//! @brief Second attempt solution passes all test cases
+//! @param[in] queries 2-D array of integers representing <operation, data>
+//! @return Vector of 0 and 1 indicating if data was present with frequency
+static std::vector<int> freqQuerySecondAttempt(
+    std::vector<std::vector<int>> queries)
+{
+    //! Output vector to hold whether frequencies match given value
+    std::vector<int> match_freq {};
+    
+    //! Map of values and their frequencies
+    std::unordered_map<int, int> data_freq {};
+    
+    //! Map of frequencies and their value counts
+    std::unordered_map<int, int> freq_counts {};
+    
+    for (const auto& query_vec : queries)
+    {
+        const auto operation = query_vec.front();
+        const auto data      = query_vec.back();
+        
+        switch (operation)
+        {
+        case 1:
+        {
+            // Insert if not already present and increment frequency
+            const auto prev_freq = data_freq[data];
+            ++data_freq[data];
+            
+            // Update freq_counts, decrementing previous
+            // frequency and incrementing new frequency
+            if (--freq_counts[prev_freq] < 1)
+            {
+                // If count for frequency is 0, remove from freq_counts
+                freq_counts.erase(prev_freq);
+            }
+            ++freq_counts[data_freq[data]];
+            break;
+        }
+        case 2:
+        {
+            auto prev_freq_it = data_freq.find(data);
+            if (prev_freq_it != data_freq.end())
+            {
+                // Save previous frequency
+                const auto prev_freq = prev_freq_it->second;
+                
+                // Decrement previous frequency in freq_counts
+                if (--freq_counts[prev_freq] < 1)
+                {
+                    // If count for frequency is 0, remove from freq_counts
+                    freq_counts.erase(prev_freq);
+                }
+                
+                // If data is in data_freq and its frequency is 0,
+                // remove from data_freq map
+                if (--data_freq[data] < 1)
+                {
+                    data_freq.erase(data);   
+                }
+                else
+                {
+                    ++freq_counts[data_freq[data]];
+                }
+            }
+            break;
+        }
+        case 3:
+            if (freq_counts.count(data) > 0 && freq_counts[data] > 0)
+            {
+                match_freq.emplace_back(1);
+            }
+            else
+            {
+                match_freq.emplace_back(0);
+            }
+            break;
+        }
+        
+    } // for (const auto& query_vec : ...
+    
+    return match_freq;
+
+} // static std::vector<int> freqQuerySecondAttempt( ...
+
 // Try sample inputs given in problem description
 TEST(FreqQueryTest, SampleInputs) {
     const std::vector<std::vector<int>> queries {
@@ -74,6 +158,12 @@ TEST(FreqQueryTest, SampleInputs) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs.cbegin()));
+    
+    const auto matching_freqs2 = freqQuerySecondAttempt(queries);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs2.cbegin()));
 }
 
 // Test case 0
@@ -95,6 +185,12 @@ TEST(FreqQueryTest, TestCase0) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs.cbegin()));
+
+    const auto matching_freqs2 = freqQuerySecondAttempt(queries);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs2.cbegin()));
 }
 
 // Test case 1
@@ -112,6 +208,12 @@ TEST(FreqQueryTest, TestCase1) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs.cbegin()));
+
+    const auto matching_freqs2 = freqQuerySecondAttempt(queries);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs2.cbegin()));
 }
 
 // Test case 2
@@ -135,4 +237,10 @@ TEST(FreqQueryTest, TestCase2) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs.cbegin()));
+    
+    const auto matching_freqs2 = freqQuerySecondAttempt(queries);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs2.cbegin()));
 }
