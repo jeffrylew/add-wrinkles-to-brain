@@ -140,6 +140,81 @@ static std::vector<int> freqQuerySecondAttempt(
 
 } // static std::vector<int> freqQuerySecondAttempt( ...
 
+//! @brief Solution from discussion section
+//! @param[in] queries 2-D array of integers representing <operation, data>
+//! @return Vector of 0 and 1 indicating if data was present with frequency
+static std::vector<int> freqQueryDiscussionSolution(
+    std::vector<std::vector<int>> queries)
+{
+    //! @todo Debug why discussion solution is failing
+
+    //! Output vector to hold whether frequencies match given value
+    std::vector<int> match_freq {};
+
+    //! first map contains <element, frequency> pairs
+    std::unordered_map<int, int> first {};
+
+    //! second map contains <frequency, frequencyCount> pairs
+    std::unordered_map<int, int> second {};
+
+    for (std::size_t i = 0; i < queries.size(); ++i)
+    {
+        const auto& query_vec = queries[i];
+        const auto  operation = query_vec.front();
+        const auto  data      = query_vec.back();
+
+        if (operation == 1)
+        {
+            //! Insert data into first map
+            //! Update the frequencies in second map
+            //! curr_freq = current frequency of data
+            int curr_freq = first[data];
+            if (curr_freq > 0)
+            {
+                //! data was already present
+                --second[curr_freq];
+            }
+            
+            //! Add data and increase its frequency
+            ++first[data];
+
+            //! Update count of new frequency in second map
+            ++second[first[data]];
+        }
+        else if (operation == 1)
+        {
+            //! Remove data
+            if (first.count(data) > 0)
+            {
+                // data is present, update frequency count
+                --second[first[data]];
+
+                // Decrease element frequency
+                --first[data];
+
+                // Update frequency count
+                ++second[first[data]];
+            }
+        }
+        else
+        {
+            // Check for the data frequency of any element
+            if (second[data] > 0)
+            {
+                match_freq.emplace_back(1);
+            }
+            else
+            {
+                match_freq.emplace_back(0);
+            }
+        }
+
+    } // for (std::size_t i = 0; i < queries.size(); ++i)
+    
+    return match_freq;
+
+} // static std::vector<int> freqQueryDiscussionSolution( ...
+
 // Try sample inputs given in problem description
 TEST(FreqQueryTest, SampleInputs) {
     const std::vector<std::vector<int>> queries {
@@ -164,6 +239,12 @@ TEST(FreqQueryTest, SampleInputs) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs2.cbegin()));
+
+    const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
+
+    EXPECT_FALSE(std::equal(expected_output.cbegin(),
+                            expected_output.cend(),
+                            matching_freqs_DS.cbegin()));
 }
 
 // Test case 0
@@ -191,6 +272,12 @@ TEST(FreqQueryTest, TestCase0) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs2.cbegin()));
+    
+    const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
+
+    EXPECT_FALSE(std::equal(expected_output.cbegin(),
+                            expected_output.cend(),
+                            matching_freqs_DS.cbegin()));
 }
 
 // Test case 1
@@ -214,6 +301,12 @@ TEST(FreqQueryTest, TestCase1) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs2.cbegin()));
+    
+    const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
+
+    EXPECT_FALSE(std::equal(expected_output.cbegin(),
+                            expected_output.cend(),
+                            matching_freqs_DS.cbegin()));
 }
 
 // Test case 2
@@ -243,4 +336,10 @@ TEST(FreqQueryTest, TestCase2) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            matching_freqs2.cbegin()));
+    
+    const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
+
+    EXPECT_FALSE(std::equal(expected_output.cbegin(),
+                            expected_output.cend(),
+                            matching_freqs_DS.cbegin()));
 }
