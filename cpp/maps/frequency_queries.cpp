@@ -146,8 +146,6 @@ static std::vector<int> freqQuerySecondAttempt(
 static std::vector<int> freqQueryDiscussionSolution(
     std::vector<std::vector<int>> queries)
 {
-    //! @todo Debug why discussion solution is failing
-
     //! Output vector to hold whether frequencies match given value
     std::vector<int> match_freq {};
 
@@ -181,7 +179,7 @@ static std::vector<int> freqQueryDiscussionSolution(
             //! Update count of new frequency in second map
             ++second[first[data]];
         }
-        else if (operation == 1)
+        else if (operation == 2)
         {
             //! Remove data
             if (first.count(data) > 0)
@@ -242,9 +240,9 @@ TEST(FreqQueryTest, SampleInputs) {
 
     const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
 
-    EXPECT_FALSE(std::equal(expected_output.cbegin(),
-                            expected_output.cend(),
-                            matching_freqs_DS.cbegin()));
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs_DS.cbegin()));
 }
 
 // Test case 0
@@ -275,9 +273,9 @@ TEST(FreqQueryTest, TestCase0) {
     
     const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
 
-    EXPECT_FALSE(std::equal(expected_output.cbegin(),
-                            expected_output.cend(),
-                            matching_freqs_DS.cbegin()));
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs_DS.cbegin()));
 }
 
 // Test case 1
@@ -304,9 +302,9 @@ TEST(FreqQueryTest, TestCase1) {
     
     const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
 
-    EXPECT_FALSE(std::equal(expected_output.cbegin(),
-                            expected_output.cend(),
-                            matching_freqs_DS.cbegin()));
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs_DS.cbegin()));
 }
 
 // Test case 2
@@ -339,7 +337,7 @@ TEST(FreqQueryTest, TestCase2) {
     
     const auto matching_freqs_DS = freqQueryDiscussionSolution(queries);
 
-    EXPECT_FALSE(std::equal(expected_output.cbegin(),
-                            expected_output.cend(),
-                            matching_freqs_DS.cbegin()));
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           matching_freqs_DS.cbegin()));
 }
