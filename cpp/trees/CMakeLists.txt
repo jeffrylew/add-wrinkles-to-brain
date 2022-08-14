@@ -5,6 +5,7 @@ set(
   "binary_tree_postorder_traversal"
   "binary_tree_preorder_traversal"
   "height_of_a_binary_tree"
+  "is_this_a_binary_search_tree"
   "lowest_common_ancestor"
 )
 
