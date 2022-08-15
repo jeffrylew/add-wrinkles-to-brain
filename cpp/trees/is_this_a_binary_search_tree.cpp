@@ -63,6 +63,53 @@ static void inorder_traversal_iterative(Node* root, std::vector<int>& node_data)
 
 } // static void inorder_traversal_iterative( ...
 
+static void inorder_traversal_morris(Node* root, std::vector<int>& node_data)
+{
+    //! @details Time complexity: O(n)
+    //!          Space complexity: O(1)
+
+    while (root != nullptr)
+    {
+        if (root->left != nullptr)
+        {
+            //! Create node that will serve as predecessor to root
+            auto predecessor = root->left;
+            while (predecessor->right != nullptr
+                   && predecessor->right != root)
+            {
+                predecessor = predecessor->right;
+            }
+
+            //! Exited while loop so check condition that caused exit
+            if (predecessor->right == nullptr)
+            {
+                //! Reached right child of rightmost node in root's left subtree
+                //! Set predecessor's right child to root
+                predecessor->right = root;
+                root               = root->left;
+            }
+            else
+            {
+                //! predecessor->right is not nullptr but is equal to root
+                //! We are revisiting predecessor so revert the link to root
+                predecessor->right = nullptr;
+                node_data.emplace_back(root->data);
+                root = root->right; 
+
+            } // else -> if (predecessor->right == nullptr)
+        }
+        else
+        {
+            //! root->left is nullptr
+            node_data.emplace_back(root->data);
+            root = root->right;
+
+        } // else -> if (root->left != nullptr)
+
+    } // while (root != nullptr)
+
+} // static void inorder_traversal_morris( ...
+
 //! @brief Check if tree is a binary search tree recursively
 //! @param[in] root Pointer to root Node
 //! @return True if tree is a binary search tree, else false
@@ -120,6 +167,32 @@ static bool checkBSTIterative(Node* root)
 
 } // static bool checkBSTIterative( ...
 
+//! @brief Check if tree is a binary search tree using Morris traversal
+//! @param[in] root Pointer to root Node
+//! @return True if tree is a binary search tree, else false
+static bool checkBSTMorris(Node* root)
+{
+    std::vector<int> node_data {};
+
+    inorder_traversal_morris(root, node_data);
+
+    if (1ULL == node_data.size())
+    {
+        return true;
+    }
+    
+    for (std::size_t i = 1ULL; i < node_data.size(); ++i)
+    {
+        if (node_data[i] <= node_data[i - 1ULL])
+        {
+            return false;
+        }
+    }
+    
+    return true;
+
+} // static bool checkBSTMorris( ...
+
 // Test case 0
 TEST(CheckBSTTest, TestCase0) {
     Node* root {nullptr};
@@ -134,6 +207,7 @@ TEST(CheckBSTTest, TestCase0) {
 
     EXPECT_TRUE(checkBSTRecursive(root));
     EXPECT_TRUE(checkBSTIterative(root));
+    EXPECT_TRUE(checkBSTMorris(root));
 
     // Clean up memory manually, HR code has memory leaks...
     delete root->right->right->right->right->right->right;
@@ -159,6 +233,7 @@ TEST(CheckBSTTest, TestCase1) {
 
     EXPECT_FALSE(checkBSTRecursive(root));
     EXPECT_FALSE(checkBSTIterative(root));
+    EXPECT_FALSE(checkBSTMorris(root));
 
     // Clean up memory manually, HR code has memory leaks...
     delete root->right->right->left->right->right->right;
@@ -184,6 +259,7 @@ TEST(CheckBSTTest, TestCase14) {
 
     EXPECT_TRUE(checkBSTRecursive(root));
     EXPECT_TRUE(checkBSTIterative(root));
+    EXPECT_TRUE(checkBSTMorris(root));
 
     // Clean up memory manually, HR code has memory leaks...
     delete root->right->right->right->right->right->right;
