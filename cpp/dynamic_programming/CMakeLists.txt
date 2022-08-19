@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "candies"
   "max_array_sum"
 )
 
