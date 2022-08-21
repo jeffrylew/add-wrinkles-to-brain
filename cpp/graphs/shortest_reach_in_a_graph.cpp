@@ -130,6 +130,50 @@ private:
 
 }; // class GraphFirstAttempt
 
+//! @class GraphDiscussionSolution
+//! @brief Discussion solution from HR
+class GraphDiscussionSolution
+{
+public:
+    GraphDiscussionSolution() = default;
+    ~GraphDiscussionSolution() = default;
+
+    GraphFirstAttempt(int n)
+        : n_ {n}
+    {
+    }
+
+    GraphDiscussionSolution(const GraphDiscussionSolution&) = default;
+    GraphDiscussionSolution(GraphDiscussionSolution&&)      = default;
+    GraphDiscussionSolution&
+        operator=(const GraphDiscussionSolution&) = default;
+    GraphDiscussionSolution& operator=(GraphDiscussionSolution&&) = default;
+
+    void add_edge(int u, int v)
+    {
+        //! @todo
+    }
+
+    std::vector<int> shortest_reach(int start)
+    {
+        //! Output vector of shortest distances
+        std::vector<int> dist_vec(n_);
+        
+        //! @todo
+        
+        return dist_vec;
+
+    } // std::vector<int> shortest_reach(int start)
+
+private:
+    //! Number of nodes in undirected graph
+    int n_ {};
+    
+    //! Length of edge in graph
+    static constexpr int edge_length {6};
+
+}; // class GraphDiscussionSolution
+
 // Test case 0
 TEST(GraphTest, TestCase0) {
     GraphFirstAttempt first_soln_1 {4};
