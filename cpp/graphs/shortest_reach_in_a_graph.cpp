@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <queue>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
@@ -105,15 +106,15 @@ public:
     std::vector<int> shortest_reach(int start)
     {
         //! Output vector of shortest distances
-            std::vector<int> dist_vec(n_);
-            
-            //! Solution expects start to be in output vector
-            for (int i = 0; i < n_; ++i)
-            {
-                dist_vec[i] = calculate_shortest_distance(start, i);
-            }
-            
-            return dist_vec;
+        std::vector<int> dist_vec(n_);
+        
+        //! Solution expects start to be in output vector
+        for (int i = 0; i < n_; ++i)
+        {
+            dist_vec[i] = calculate_shortest_distance(start, i);
+        }
+        
+        return dist_vec;
 
     } // std::vector<int> shortest_reach(int start)
 
@@ -132,15 +133,17 @@ private:
 
 //! @class GraphDiscussionSolution
 //! @brief Discussion solution from HR
+//! @details https://www.hackerrank.com/challenges/ctci-bfs-shortest-reach/forum
 class GraphDiscussionSolution
 {
 public:
     GraphDiscussionSolution() = default;
     ~GraphDiscussionSolution() = default;
 
-    GraphFirstAttempt(int n)
+    GraphDiscussionSolution(int n)
         : n_ {n}
     {
+        connected_nodes_.resize(n);
     }
 
     GraphDiscussionSolution(const GraphDiscussionSolution&) = default;
@@ -151,15 +154,50 @@ public:
 
     void add_edge(int u, int v)
     {
-        //! @todo
+        //! For undirected graph, add edges from both sides
+        connected_nodes_[u].emplace_back(v);
+        connected_nodes_[v].emplace_back(u);
     }
 
     std::vector<int> shortest_reach(int start)
     {
-        //! Output vector of shortest distances
-        std::vector<int> dist_vec(n_);
+        //! Output vector of shortest distances, O(n) space
+        //! Initialized with -1 except at start index, which is 0
+        std::vector<int> dist_vec(n_, -1);
+        dist_vec[start] = 0;
         
-        //! @todo
+        //! Nodes to process, initialize with start
+        std::queue<int> nodes_todo {};
+        nodes_todo.push(start);
+
+        while (not nodes_todo.empty())
+        {
+            const auto curr_node = nodes_todo.front();
+            nodes_todo.pop();
+
+            //! If connected nodes of curr_node have not been processed yet
+            //! (distance == -1) then add each to queue and update distance
+            for (const auto connected_node : connected_nodes_[curr_node])
+            {
+                if (dist_vec[connected_node] != -1)
+                {
+                    //! Connected node has already been processed since distance
+                    //! is not -1 so skip it. With BFS, the node will always be 
+                    //! visited at the earliest time. This is O(1) space instead
+                    //! of O(n) space, which a solution using a set of visited
+                    //! nodes would require
+                    continue;
+                }
+
+                //! Update distance of connected node
+                dist_vec[connected_node] = dist_vec[curr_node] + edge_length;
+                
+                //! Add connected node to queue
+                nodes_todo.push(connected_node);
+
+            } // for (const auto connected_node : ...
+
+        } // while (not nodes_todo.empty())
         
         return dist_vec;
 
@@ -172,6 +210,10 @@ private:
     //! Length of edge in graph
     static constexpr int edge_length {6};
 
+    //! Vector of nodes where each index
+    //! has a vector of connected nodes
+    std::vector<std::vector<int>> connected_nodes_ {};
+
 }; // class GraphDiscussionSolution
 
 // Test case 0
@@ -181,7 +223,7 @@ TEST(GraphTest, TestCase0) {
     first_soln_1.add_edge(0, 2);
     auto first_soln_dist = first_soln_1.shortest_reach(0);
 
-    const std::vector<int> expected_dist_1 {-1, 6, 6, -1};
+    std::vector<int> expected_dist_1 {-1, 6, 6, -1};
     EXPECT_TRUE(std::equal(first_soln_dist.cbegin(),
                            first_soln_dist.cend(),
                            expected_dist_1.cbegin()));
@@ -190,9 +232,29 @@ TEST(GraphTest, TestCase0) {
     first_soln_2.add_edge(1, 2);
     first_soln_dist = first_soln_2.shortest_reach(1);
     
-    const std::vector<int> expected_dist_2 {-1, -1, 6};
+    std::vector<int> expected_dist_2 {-1, -1, 6};
     EXPECT_TRUE(std::equal(first_soln_dist.cbegin(),
                            first_soln_dist.cend(),
+                           expected_dist_2.cbegin()));
+
+    //! Test discussion solution
+    GraphDiscussionSolution discussion_soln_1 {4};
+    discussion_soln_1.add_edge(0, 1);
+    discussion_soln_1.add_edge(0, 2);
+    auto discussion_soln_dist = discussion_soln_1.shortest_reach(0);
+
+    expected_dist_1 = {0, 6, 6, -1};
+    EXPECT_TRUE(std::equal(discussion_soln_dist.cbegin(),
+                           discussion_soln_dist.cend(),
+                           expected_dist_1.cbegin()));
+
+    GraphDiscussionSolution discussion_soln_2 {3};
+    discussion_soln_2.add_edge(1, 2);
+    discussion_soln_dist = discussion_soln_2.shortest_reach(1);
+    
+    expected_dist_2 = {-1, 0, 6};
+    EXPECT_TRUE(std::equal(discussion_soln_dist.cbegin(),
+                           discussion_soln_dist.cend(),
                            expected_dist_2.cbegin()));
 }
 
@@ -205,9 +267,22 @@ TEST(GraphTest, TestCase7) {
     first_soln.add_edge(0, 4);
     auto first_soln_dist = first_soln.shortest_reach(0);
 
-    const std::vector<int> expected_dist {-1, 6, 12, 18, 6, -1};
+    std::vector<int> expected_dist {-1, 6, 12, 18, 6, -1};
     EXPECT_TRUE(std::equal(first_soln_dist.cbegin(),
                            first_soln_dist.cend(),
+                           expected_dist.cbegin()));
+
+    //! Test discussion solution
+    GraphDiscussionSolution discussion_soln {6};
+    discussion_soln.add_edge(0, 1);
+    discussion_soln.add_edge(1, 2);
+    discussion_soln.add_edge(2, 3);
+    discussion_soln.add_edge(0, 4);
+    auto discussion_soln_dist = discussion_soln.shortest_reach(0);
+
+    expected_dist = {0, 6, 12, 18, 6, -1};
+    EXPECT_TRUE(std::equal(discussion_soln_dist.cbegin(),
+                           discussion_soln_dist.cend(),
                            expected_dist.cbegin()));
 }
 
@@ -220,9 +295,22 @@ TEST(GraphTest, TestCase8) {
     first_soln.add_edge(1, 4);
     auto first_soln_dist = first_soln.shortest_reach(1);
 
-    const std::vector<int> expected_dist {6, -1, 12, 18, 6, -1, -1};
+    std::vector<int> expected_dist {6, -1, 12, 18, 6, -1, -1};
     EXPECT_TRUE(std::equal(first_soln_dist.cbegin(),
                            first_soln_dist.cend(),
+                           expected_dist.cbegin()));
+
+    //! Test discussion solution
+    GraphDiscussionSolution discussion_soln {7};
+    discussion_soln.add_edge(0, 1);
+    discussion_soln.add_edge(0, 2);
+    discussion_soln.add_edge(2, 3);
+    discussion_soln.add_edge(1, 4);
+    auto discussion_soln_dist = discussion_soln.shortest_reach(1);
+
+    expected_dist = {6, 0, 12, 18, 6, -1, -1};
+    EXPECT_TRUE(std::equal(discussion_soln_dist.cbegin(),
+                           discussion_soln_dist.cend(),
                            expected_dist.cbegin()));
 }
 
