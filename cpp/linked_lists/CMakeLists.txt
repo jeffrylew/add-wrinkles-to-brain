@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "insert_a_node"
+  "insert_a_node_into_a_sorted_doubly_linked_list"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
