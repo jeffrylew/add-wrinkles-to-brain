@@ -3,6 +3,7 @@
  */
 
 #include <cstdlib>
+#include <vector>
 
 class DoublyLinkedListNode
 {
@@ -58,5 +59,18 @@ public:
         }
 
         this->tail = node;
+    }
+
+    static std::vector<int> print(DoublyLinkedListNode* node)
+    {
+        std::vector<int> node_data {};
+
+        while (node != nullptr)
+        {
+            node_data.push_back(node->data);
+            node = node->next;    
+        }
+
+        return node_data;
     }
 };
