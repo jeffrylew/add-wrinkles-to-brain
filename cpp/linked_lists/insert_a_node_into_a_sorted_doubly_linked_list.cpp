@@ -45,6 +45,36 @@ static DoublyLinkedListNode* sortedInsert(DoublyLinkedListNode* llist,
 
 } // static DoublyLinkedListNode* sortedInsert( ...
 
+//! @brief Solution from HR discussion section
+//! @param[in] llist Pointer to head of doubly-linked list
+//! @param[in] data  Value of data field for DoublyLinkedListNode to insert
+//! @return Pointer to head of doubly-linked list
+static DoublyLinkedListNode* sortedInsertDiscussionSolution(
+    DoublyLinkedListNode* llist,
+    int                   data)
+{
+    auto* node = new DoublyLinkedListNode(data);
+
+    if (llist == nullptr)
+    {
+        return node;
+    }
+    else if (data < llist->data)
+    {
+        node->next  = llist;
+        llist->prev = node;
+        return node;
+    }
+    else
+    {
+        auto* rest  = sortedInsertDiscussionSolution(llist->next, data);
+        llist->next = rest;
+        rest->prev  = llist;
+        return llist;
+    }
+
+} // static DoublyLinkedListNode* sortedInsertDiscussionSolution( ...
+
 // Test case 0
 TEST(SortedInsertTest, TestCase0) {
     DoublyLinkedList llist {};
@@ -61,6 +91,19 @@ TEST(SortedInsertTest, TestCase0) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+    
+    DoublyLinkedList llistDS {};
+    llistDS.insert_node(1);
+    llistDS.insert_node(3);
+    llistDS.insert_node(4);
+    llistDS.insert_node(10);
+
+    auto*      result_head_DS = sortedInsertDiscussionSolution(llistDS.head, 5);
+    const auto result_data_DS = DoublyLinkedList::print(result_head_DS);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS.cbegin()));
 }
 
 // Test case 1
@@ -78,6 +121,18 @@ TEST(SortedInsertTest, TestCase1) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+    
+    DoublyLinkedList llistDS {};
+    llistDS.insert_node(2);
+    llistDS.insert_node(3);
+    llistDS.insert_node(4);
+
+    auto*      result_head_DS = sortedInsertDiscussionSolution(llistDS.head, 1);
+    const auto result_data_DS = DoublyLinkedList::print(result_head_DS);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS.cbegin()));
 }
 
 // Test case 7
@@ -95,4 +150,16 @@ TEST(SortedInsertTest, TestCase7) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+
+    DoublyLinkedList llistDS {};
+    llistDS.insert_node(1);
+    llistDS.insert_node(2);
+    llistDS.insert_node(3);
+
+    auto*      result_head_DS = sortedInsertDiscussionSolution(llistDS.head, 4);
+    const auto result_data_DS = DoublyLinkedList::print(result_head_DS);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS.cbegin()));
 }
