@@ -79,9 +79,18 @@ static std::string abbreviationFirstAttempt(std::string a, std::string b)
 
 } // static std::string abbreviationFirstAttempt( ...
 
+//! @brief Solution from discussion section
+static std::string abbreviationDiscussionSolution(std::string a, std::string b)
+{
+    //! @todo Turn hints into code
+
+} // static std::string abbreviationDiscussionSolution( ...
+
 // Test case 0
 TEST(AbbreviationTest, TestCase0) {
     EXPECT_EQ("YES", abbreviationFirstAttempt("daBcd", "ABC"));
+
+    // EXPECT_EQ("YES", abbreviationDiscussionSolution("daBcd", "ABC"));
 }
 
 // Test case 1
@@ -96,6 +105,19 @@ TEST(AbbreviationTest, TestCase1) {
     EXPECT_EQ("YES", abbreviationFirstAttempt("DFIQG", "DFIQG"));
     EXPECT_EQ("NO", abbreviationFirstAttempt("sYOCa", "YOCN"));
     EXPECT_EQ("NO", abbreviationFirstAttempt("JHMWY", "HUVPW"));
+
+    /*
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("Pi", "P"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("AfPZN", "APZNC"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("LDJAN", "LJJM"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("UMKFW", "UMKFW"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("KXzQ", "K"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("LIT", "LIT"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("QYCH", "QYCH"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("DFIQG", "DFIQG"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("sYOCa", "YOCN"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("JHMWY", "HUVPW"));
+    */
 }
 
 // Test case 15
@@ -103,4 +125,10 @@ TEST(AbbreviationTest, TestCase15) {
     EXPECT_EQ("NO", abbreviationFirstAttempt("AbCdE", "AFE"));
     EXPECT_EQ("NO", abbreviationFirstAttempt("beFgH", "EFG"));
     EXPECT_EQ("YES", abbreviationFirstAttempt("beFgH", "EFH"));
+
+    /*
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("AbCdE", "AFE"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution("beFgH", "EFG"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution("beFgH", "EFH"));
+    */
 }
