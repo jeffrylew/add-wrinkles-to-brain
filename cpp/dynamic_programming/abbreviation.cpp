@@ -184,11 +184,117 @@ static std::string abbreviationDiscussionSolution1(std::string a, std::string b)
 
 } // static std::string abbreviationDiscussionSolution1( ...
 
+//! @brief Easier to understand solution from discussion section
+//! @param[in] a String to modify
+//! @param[in] b String to match
+//! @return "YES" if a can be modified to match b, else "NO"
+static std::string abbreviationDiscussionSolution2(std::string a, std::string b)
+{
+    //! @details https://www.hackerrank.com/challenges/abbr/forum
+
+    //! Addition of 1ULL accounts for empty substrings
+    const auto dp_len_a = a.size() + 1ULL;
+    const auto dp_len_b = b.size() + 1ULL;
+    
+    //! dp tracks whether the substring of b is a
+    //! subsequence of substring of a. Values are
+    //! initialized to false
+    //!
+    //! dp_len_a rows, assume this is y-axis
+    //! dp_len_b cols, assume this is x-axis
+    std::vector<std::vector<bool>> dp(
+        dp_len_b, std::vector<bool>(dp_len_a, false));
+    
+    //! Initialize case when string a (to modify)
+    //! and string b (to match) are both empty
+    dp[0][0] = true;
+    
+    //! Index i_b = 0 represents empty b substring
+    //! Index j_a = 0 represents empty a substring
+    
+    //! Use classic C++ locale
+    const std::locale loc {};
+
+    for (std::size_t i_b = 0; i_b < dp_len_b; ++i_b)
+    {
+        for (std::size_t j_a = 1; j_a < dp_len_a; ++j_a)
+        {
+            //! Case when letters remain in string b (to match) but
+            //! there are no letters left in string a (to modify):
+            //! i_b > 0 and j_a == 0 already initialized to false
+            
+            if (i_b == 0)
+            {
+                //! Current character in a
+                const auto char_a = a[j_a - 1];
+                
+                //! Substring of b (to match) is empty but
+                //! there are chars left in a (to modify)
+                //! Current char in a needs to be lowercase AND
+                //! prior substring of a is an abbreviation
+                dp[i_b][j_a] = std::islower(char_a, loc) && dp[i_b][j_a - 1];
+            }
+            else if (i_b > 0)
+            {
+                //! Case when substrings of a and b are not empty
+                
+                const auto char_a = a[j_a - 1];
+                const auto char_b = b[i_b - 1];
+                
+                if (char_a >= 'A' && char_a <= 'Z')
+                {
+                    //! Case for uppercase char in a
+
+                    if (char_a == char_b)
+                    {
+                        //! Char in a and char in b are same uppercase letter
+                        //! Check if prior substrings were abbreviations
+                        dp[i_b][j_a] = dp[i_b - 1][j_a - 1];
+                    }
+                    
+                    //! Case: Uppercase char in a does not match char in b
+                    //!       Value in dp already initialized to false
+                }
+                else
+                {
+                    //! Case for lowercase char in a
+
+                    if (std::toupper(char_a, loc) == char_b)
+                    {
+                        //! Lowercase char in a matches uppercase char in b
+                        //! Check if prior substrings were abbreviations OR if
+                        //! substring b is still an abbreviation of substring a
+                        //! if this lowercase char from a is dropped
+                        dp[i_b][j_a] = dp[i_b - 1][j_a - 1] || dp[i_b][j_a - 1];
+                    }
+                    else
+                    {
+                        //! Lowercase char in a matches lowercase char in b
+                        //! OR lowercase char in a does not match letter in b
+                        //! Check if substring b is still an abbreviation of
+                        //! substring a if this lowercase char from a is dropped
+                        dp[i_b][j_a] = dp[i_b][j_a - 1];
+                    }
+
+                } // else -> if (char_a >= 'A' && ...
+                
+            } // else if (i_b > 0)
+            
+        } // for (std::size_t j_a = 1; ...
+        
+    } // for (std::size_t i_b = 0; ...
+    
+    return dp[b.size()][a.size()] ? "YES" : "NO";
+
+} // static std::string abbreviationDiscussionSolution2( ...
+
 // Test case 0
 TEST(AbbreviationTest, TestCase0) {
     EXPECT_EQ("YES", abbreviationFirstAttempt("daBcd", "ABC"));
 
     EXPECT_EQ("YES", abbreviationDiscussionSolution1("daBcd", "ABC"));
+
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("daBcd", "ABC"));
 }
 
 // Test case 1
@@ -214,6 +320,17 @@ TEST(AbbreviationTest, TestCase1) {
     EXPECT_EQ("YES", abbreviationDiscussionSolution1("DFIQG", "DFIQG"));
     EXPECT_EQ("NO", abbreviationDiscussionSolution1("sYOCa", "YOCN"));
     EXPECT_EQ("NO", abbreviationDiscussionSolution1("JHMWY", "HUVPW"));
+
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("Pi", "P"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("AfPZN", "APZNC"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("LDJAN", "LJJM"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("UMKFW", "UMKFW"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("KXzQ", "K"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("LIT", "LIT"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("QYCH", "QYCH"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("DFIQG", "DFIQG"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("sYOCa", "YOCN"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("JHMWY", "HUVPW"));
 }
 
 // Test case 15
@@ -225,4 +342,8 @@ TEST(AbbreviationTest, TestCase15) {
     EXPECT_EQ("NO", abbreviationDiscussionSolution1("AbCdE", "AFE"));
     EXPECT_EQ("NO", abbreviationDiscussionSolution1("beFgH", "EFG"));
     EXPECT_EQ("YES", abbreviationDiscussionSolution1("beFgH", "EFH"));
+
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("AbCdE", "AFE"));
+    EXPECT_EQ("NO", abbreviationDiscussionSolution2("beFgH", "EFG"));
+    EXPECT_EQ("YES", abbreviationDiscussionSolution2("beFgH", "EFH"));
 }
