@@ -40,6 +40,9 @@ static DoublyLinkedListNode* reverse(DoublyLinkedListNode* llist)
 static DoublyLinkedListNode* reverseDiscussionSolutionIterative(
     DoublyLinkedListNode* llist)
 {
+    //! @details
+    //! https://www.hackerrank.com/challenges/reverse-a-doubly-linked-list/forum
+
     auto* curr     = llist;
     auto* new_head = llist;
 
@@ -62,6 +65,37 @@ static DoublyLinkedListNode* reverseDiscussionSolutionIterative(
     return new_head;
 
 } // static DoublyLinkedListNode* reverseDiscussionSolutionIterative( ...
+
+//! @brief Recursive solution from HR discussion section
+//! @param[in] llist Pointer to head of DoublyLinkedList
+//! @return Pointer to head of reversed list
+static DoublyLinkedListNode* reverseDiscussionSolutionRecursive(
+    DoublyLinkedListNode* llist)
+{
+    //! @details
+    //! https://www.hackerrank.com/challenges/reverse-a-doubly-linked-list/forum
+
+    //! If list is empty, return
+    if (llist == nullptr)
+    {
+        return llist;
+    }
+
+    //! Swap next and prev
+    auto* temp  = llist->next;
+    llist->next = llist->prev;
+    llist->prev = temp;
+
+    //! If prev is now nullptr, list has been fully reversed
+    if (llist->prev == nullptr)
+    {
+        return llist;
+    }
+    
+    //! Otherwise, keep going
+    return reverseDiscussionSolutionRecursive(llist->prev);
+
+} // static DoublyLinkedListNode* reverseDiscussionSolutionRecursive( ...
 
 // Test case 0
 TEST(ReverseTest, TestCase0) {
@@ -94,6 +128,21 @@ TEST(ReverseTest, TestCase0) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data_DS_iterative.cbegin()));
+    
+    DoublyLinkedList llist_DS_recursive {};
+    llist_DS_recursive.insert_node(1);
+    llist_DS_recursive.insert_node(2);
+    llist_DS_recursive.insert_node(3);
+    llist_DS_recursive.insert_node(4);
+
+    auto* result_head_DS_recursive =
+        reverseDiscussionSolutionRecursive(llist_DS_recursive.head);
+    const auto result_data_DS_recursive =
+        DoublyLinkedList::print(result_head_DS_recursive);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_recursive.cbegin()));
 }
 
 // Test case 1
@@ -125,6 +174,20 @@ TEST(ReverseTest, TestCase1) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data_DS_iterative.cbegin()));
+    
+    DoublyLinkedList llist_DS_recursive {};
+    llist_DS_recursive.insert_node(2);
+    llist_DS_recursive.insert_node(3);
+    llist_DS_recursive.insert_node(4);
+
+    auto* result_head_DS_recursive =
+        reverseDiscussionSolutionRecursive(llist_DS_recursive.head);
+    const auto result_data_DS_recursive =
+        DoublyLinkedList::print(result_head_DS_recursive);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_recursive.cbegin()));
 }
 
 // Test case 7
@@ -160,4 +223,20 @@ TEST(ReverseTest, TestCase7) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data_DS_iterative.cbegin()));
+    
+    DoublyLinkedList llist_DS_recursive {};
+    llist_DS_recursive.insert_node(17);
+    llist_DS_recursive.insert_node(20);
+    llist_DS_recursive.insert_node(23);
+    llist_DS_recursive.insert_node(35);
+    llist_DS_recursive.insert_node(47);
+
+    auto* result_head_DS_recursive =
+        reverseDiscussionSolutionRecursive(llist_DS_recursive.head);
+    const auto result_data_DS_recursive =
+        DoublyLinkedList::print(result_head_DS_recursive);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_recursive.cbegin()));
 }
