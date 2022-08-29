@@ -34,6 +34,35 @@ static DoublyLinkedListNode* reverse(DoublyLinkedListNode* llist)
 
 } // static DoublyLinkedListNode* reverse( ...
 
+//! @brief Iterative solution from HR discussion section
+//! @param[in] llist Pointer to head of DoublyLinkedList
+//! @return Pointer to head of reversed list
+static DoublyLinkedListNode* reverseDiscussionSolutionIterative(
+    DoublyLinkedListNode* llist)
+{
+    auto* curr     = llist;
+    auto* new_head = llist;
+
+    while (curr != nullptr)
+    {
+        //! Copy prev pointer of current node
+        auto* prev = curr->prev;
+
+        //! Swap prev and next of current node
+        curr->prev = curr->next;
+        curr->next = prev;
+
+        //! Set new head of list to current node
+        new_head = curr;
+
+        //! Move forwards in list
+        curr = curr->prev;
+    }
+    
+    return new_head;
+
+} // static DoublyLinkedListNode* reverseDiscussionSolutionIterative( ...
+
 // Test case 0
 TEST(ReverseTest, TestCase0) {
     DoublyLinkedList llist {};
@@ -50,6 +79,21 @@ TEST(ReverseTest, TestCase0) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+    
+    DoublyLinkedList llist_DS_iterative {};
+    llist_DS_iterative.insert_node(1);
+    llist_DS_iterative.insert_node(2);
+    llist_DS_iterative.insert_node(3);
+    llist_DS_iterative.insert_node(4);
+
+    auto* result_head_DS_iterative =
+        reverseDiscussionSolutionIterative(llist_DS_iterative.head);
+    const auto result_data_DS_iterative =
+        DoublyLinkedList::print(result_head_DS_iterative);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_iterative.cbegin()));
 }
 
 // Test case 1
@@ -67,6 +111,20 @@ TEST(ReverseTest, TestCase1) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+    
+    DoublyLinkedList llist_DS_iterative {};
+    llist_DS_iterative.insert_node(2);
+    llist_DS_iterative.insert_node(3);
+    llist_DS_iterative.insert_node(4);
+
+    auto* result_head_DS_iterative =
+        reverseDiscussionSolutionIterative(llist_DS_iterative.head);
+    const auto result_data_DS_iterative =
+        DoublyLinkedList::print(result_head_DS_iterative);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_iterative.cbegin()));
 }
 
 // Test case 7
@@ -86,4 +144,20 @@ TEST(ReverseTest, TestCase7) {
     EXPECT_TRUE(std::equal(expected_data.cbegin(),
                            expected_data.cend(),
                            result_data.cbegin()));
+    
+    DoublyLinkedList llist_DS_iterative {};
+    llist_DS_iterative.insert_node(17);
+    llist_DS_iterative.insert_node(20);
+    llist_DS_iterative.insert_node(23);
+    llist_DS_iterative.insert_node(35);
+    llist_DS_iterative.insert_node(47);
+
+    auto* result_head_DS_iterative =
+        reverseDiscussionSolutionIterative(llist_DS_iterative.head);
+    const auto result_data_DS_iterative =
+        DoublyLinkedList::print(result_head_DS_iterative);
+
+    EXPECT_TRUE(std::equal(expected_data.cbegin(),
+                           expected_data.cend(),
+                           result_data_DS_iterative.cbegin()));
 }
