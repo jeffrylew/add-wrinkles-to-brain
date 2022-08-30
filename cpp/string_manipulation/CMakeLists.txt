@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "alternating_characters"
+  "common_child"
   "making_anagrams"
   "sherlock_and_the_valid_string"
   "special_string_again"
