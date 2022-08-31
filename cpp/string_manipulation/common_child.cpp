@@ -10,6 +10,9 @@
 //! @return Length of longest string which is a common child of input strings
 static int commonChildFirstAttempt(std::string s1, std::string s2)
 {
+    //! @details Time complexity O(s1.size() * s2.size())
+    //!          Space complexity O(s1.size() * s2.size())
+
     //! Define sizes for dp matrix, add 1 to account for empty strings
     //! rows = y-axis, cols = x-axis
     const auto dp_nrows = 1ULL + s1.size();
@@ -28,7 +31,9 @@ static int commonChildFirstAttempt(std::string s1, std::string s2)
             
             if (s1_char == s2_char)
             {
-                dp[col][row] = dp[col][row - 1] + 1;
+                //! Just needed dp[col - 1][row - 1] instead of dp[col][row - 1]
+                //! See en.wikipedia.org/wiki/Longest_common_subsequence_problem
+                dp[col][row] = dp[col - 1][row - 1] + 1;
             }
             else
             {
