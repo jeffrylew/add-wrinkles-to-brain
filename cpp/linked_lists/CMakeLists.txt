@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "find_merge_point_of_two_lists"
   "insert_a_node"
   "insert_a_node_into_a_sorted_doubly_linked_list"
   "reverse_a_doubly_linked_list"
