@@ -43,6 +43,45 @@ static int findMergeNode(SinglyLinkedListNode* head1,
 
 } // static int findMergeNode( ...
 
+//! @brief Solution from discussion section of HR (Floyd's cycle detection alg)
+//! @param[in] head1 Pointer to head of first list
+//! @param[in] head2 Pointer to head of second list
+//! @return Data value of the node where the lists merge
+static int findMergeNodeDiscussionSolution(SinglyLinkedListNode* head1,
+                                           SinglyLinkedListNode* head2)
+{
+    auto curr1 = head1;
+    auto curr2 = head2;
+
+    //! Loop until two nodes are the same
+    while (curr1 != curr2)
+    {
+        //! If reach end of one list, start at beginning of the other one
+
+        if (curr1->next == nullptr)
+        {
+            curr1 = head2;
+        }
+        else
+        {
+            curr1 = curr1->next;
+        }
+
+        if (curr2->next == nullptr)
+        {
+            curr2 = head1;
+        }
+        else
+        {
+            curr2 = curr2->next;
+        }
+
+    } // while (curr1 != curr2)
+    
+    return curr2->data;
+
+} // static int findMergeNodeDiscussionSolution( ...
+
 // Test case 0
 TEST(FindMergeNodeTest, TestCase0) {
     // Initialize SinglyLinkedLists
@@ -58,6 +97,7 @@ TEST(FindMergeNodeTest, TestCase0) {
     llist2->head->next = llist1->head->next;
 
     EXPECT_EQ(2, findMergeNode(llist1->head, llist2->head));
+    EXPECT_EQ(2, findMergeNodeDiscussionSolution(llist1->head, llist2->head));
 
     // Free allocated memory (manually handle llist2 to avoid double free)
     free_singly_linked_list(llist1->head);
@@ -79,6 +119,7 @@ TEST(FindMergeNodeTest, TestCase1) {
     llist2->head->next = llist1->head->next->next;
 
     EXPECT_EQ(3, findMergeNode(llist1->head, llist2->head));
+    EXPECT_EQ(3, findMergeNodeDiscussionSolution(llist1->head, llist2->head));
 
     // Free allocated memory (manually handle llist2 to avoid double free)
     free_singly_linked_list(llist1->head);
