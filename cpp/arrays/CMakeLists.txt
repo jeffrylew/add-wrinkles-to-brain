@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "2d_array_ds"
+  "array_manipulation"
   "left_rotation"
   "minimum_swaps_2"
   "new_year_chaos"
