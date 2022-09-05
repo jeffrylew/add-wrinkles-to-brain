@@ -5,6 +5,7 @@ set(
   "counting_sort"
   "fraudulent_activity_notifications"
   "mark_and_toys"
+  "merge_sort"
   "selection_sort"
 )
 
