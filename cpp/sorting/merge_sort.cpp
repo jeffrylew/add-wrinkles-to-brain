@@ -139,6 +139,7 @@ void TopDownMerge(const std::vector<int>& A,
     for (int k = iBegin; k < iEnd; ++k)
     {
         //! If first element in LHS list exists and is <= first element in RHS
+        //! RHS_idx >= iEnd means all elements in RHS list have been processed
         if (LHS_idx < iMid && (RHS_idx >= iEnd || A[LHS_idx] <= A[RHS_idx]))
         {
             B[k] = A[LHS_idx++];
@@ -159,6 +160,48 @@ TEST(MergeSortTest, TestSimple) {
                            mergeSortIC({8, 3, 2, 7, 9, 1, 4}).cbegin()));
     
     std::vector<int> input {8, 3, 2, 7, 9, 1, 4};
+    TopDownMergeSort(input);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           input.cbegin()));
+}
+
+TEST(MergeSortTest, TestSingleElement) {
+    const std::vector<int> expected {7};
+
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           mergeSortIC({7}).cbegin()));
+    
+    std::vector<int> input {7};
+    TopDownMergeSort(input);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           input.cbegin()));
+}
+
+TEST(MergeSortTest, TestVectorReversed) {
+    const std::vector<int> expected {1, 2, 3, 4, 5};
+
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           mergeSortIC({5, 4, 3, 2, 1}).cbegin()));
+    
+    std::vector<int> input {5, 4, 3, 2, 1};
+    TopDownMergeSort(input);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           input.cbegin()));
+}
+
+TEST(MergeSortTest, TestVectorAlreadySorted) {
+    const std::vector<int> expected {1, 2, 3, 4, 5};
+
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           mergeSortIC({1, 2, 3, 4, 5}).cbegin()));
+    
+    std::vector<int> input {1, 2, 3, 4, 5};
     TopDownMergeSort(input);
     EXPECT_TRUE(std::equal(expected.cbegin(),
                            expected.cend(),
