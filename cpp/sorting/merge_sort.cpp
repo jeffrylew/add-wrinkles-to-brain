@@ -18,6 +18,12 @@ void TopDownMerge(const std::vector<int>& A,
                   int                     iEnd,
                   std::vector<int>&       B);
 
+void BottomUpMerge(const std::vector<int>& A,
+                   int                     iLeft,
+                   int                     iRight,
+                   int                     iEnd,
+                   std::vector<int>&       B);
+
 //! @brief Merge sort from https://www.interviewcake.com/concept/cpp/merge-sort
 static std::vector<int> mergeSortIC(const std::vector<int>& vec)
 {
@@ -152,6 +158,72 @@ void TopDownMerge(const std::vector<int>& A,
 
 } // void TopDownMerge( ...
 
+//! @brief Bottom-up merge sort from https://en.wikipedia.org/wiki/Merge_sort
+//! @param[in,out] A Reference to vector of items to sort
+static void BottomUpMergeSort(std::vector<int>& A)
+{
+    //! @details Treat input vector as an array of n sublists of size 1.
+    //!          Iteratively merge sub-lists back and forth between two buffers.
+
+    //! Vector B is a work vector
+    std::vector<int> B(A.size());
+
+    const auto n = static_cast<int>(A.size());
+
+    //! Each 1-element list in A is already "sorted"
+    //! Make successively longer sorted lists of length 2, 4, ... until sorted
+    for (int width = 1; width < n; width *= 2)
+    {
+        //! Vector A is full of lists of length width
+        for (int i = 0; i < n; i = i + 2 * width)
+        {
+            //! Merge two lists into B
+            //!     A[i:(i + width - 1)] and A[(i + width):(i + 2 * width - 1)]
+            //! or copy A[i:(n - 1)] to B if i + width >= n
+            BottomUpMerge(A,
+                          i,                          // iLeft
+                          std::min(i + width, n),     // iRight
+                          std::min(i + 2 * width, n), // iEnd
+                          B);
+        }
+        
+        //! Now work vector B is full of lists of length 2 * width
+        //! Copy B to A for the next iteration
+        A = B;
+
+    } // for (int width = 1; ...
+
+} // static void BottomUpMergeSort( ...
+
+//! Left list is A[iLeft:(iRight - 1)]
+//! Right list is A[iRight:(iEnd - 1)]
+//! This is the same as TopDownMerge
+void BottomUpMerge(const std::vector<int>& A,
+                   int                     iLeft,
+                   int                     iRight,
+                   int                     iEnd,
+                   std::vector<int>&       B)
+{
+    auto LHS_idx = iLeft;
+    auto RHS_idx = iRight;
+
+    //! While there are elements in the LHS or RHS lists...
+    for (int k = iLeft; k < iEnd; ++k)
+    {
+        //! If first element in LHS list exists and is <= first element in RHS
+        //! RHS_idx >= iEnd means all elements in RHS list have been processed
+        if (LHS_idx < iRight && (RHS_idx >= iEnd || A[LHS_idx] <= A[RHS_idx]))
+        {
+            B[k] = A[LHS_idx++];
+        }
+        else
+        {
+            B[k] = A[RHS_idx++];
+        }
+    }
+
+} // void BottomUpMerge( ...
+
 TEST(MergeSortTest, TestSimple) {
     const std::vector<int> expected {1, 2, 3, 4, 7, 8, 9};
 
@@ -159,11 +231,17 @@ TEST(MergeSortTest, TestSimple) {
                            expected.cend(),
                            mergeSortIC({8, 3, 2, 7, 9, 1, 4}).cbegin()));
     
-    std::vector<int> input {8, 3, 2, 7, 9, 1, 4};
-    TopDownMergeSort(input);
+    std::vector<int> inputTD {8, 3, 2, 7, 9, 1, 4};
+    TopDownMergeSort(inputTD);
     EXPECT_TRUE(std::equal(expected.cbegin(),
                            expected.cend(),
-                           input.cbegin()));
+                           inputTD.cbegin()));
+    
+    std::vector<int> inputBU {8, 3, 2, 7, 9, 1, 4};
+    BottomUpMergeSort(inputBU);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           inputBU.cbegin()));
 }
 
 TEST(MergeSortTest, TestSingleElement) {
@@ -173,11 +251,17 @@ TEST(MergeSortTest, TestSingleElement) {
                            expected.cend(),
                            mergeSortIC({7}).cbegin()));
     
-    std::vector<int> input {7};
-    TopDownMergeSort(input);
+    std::vector<int> inputTD {7};
+    TopDownMergeSort(inputTD);
     EXPECT_TRUE(std::equal(expected.cbegin(),
                            expected.cend(),
-                           input.cbegin()));
+                           inputTD.cbegin()));
+    
+    std::vector<int> inputBU {7};
+    BottomUpMergeSort(inputBU);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           inputBU.cbegin()));
 }
 
 TEST(MergeSortTest, TestVectorReversed) {
@@ -187,11 +271,17 @@ TEST(MergeSortTest, TestVectorReversed) {
                            expected.cend(),
                            mergeSortIC({5, 4, 3, 2, 1}).cbegin()));
     
-    std::vector<int> input {5, 4, 3, 2, 1};
-    TopDownMergeSort(input);
+    std::vector<int> inputTD {5, 4, 3, 2, 1};
+    TopDownMergeSort(inputTD);
     EXPECT_TRUE(std::equal(expected.cbegin(),
                            expected.cend(),
-                           input.cbegin()));
+                           inputTD.cbegin()));
+    
+    std::vector<int> inputBU {5, 4, 3, 2, 1};
+    BottomUpMergeSort(inputBU);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           inputBU.cbegin()));
 }
 
 TEST(MergeSortTest, TestVectorAlreadySorted) {
@@ -201,9 +291,15 @@ TEST(MergeSortTest, TestVectorAlreadySorted) {
                            expected.cend(),
                            mergeSortIC({1, 2, 3, 4, 5}).cbegin()));
     
-    std::vector<int> input {1, 2, 3, 4, 5};
-    TopDownMergeSort(input);
+    std::vector<int> inputTD {1, 2, 3, 4, 5};
+    TopDownMergeSort(inputTD);
     EXPECT_TRUE(std::equal(expected.cbegin(),
                            expected.cend(),
-                           input.cbegin()));
+                           inputTD.cbegin()));
+    
+    std::vector<int> inputBU {1, 2, 3, 4, 5};
+    BottomUpMergeSort(inputBU);
+    EXPECT_TRUE(std::equal(expected.cbegin(),
+                           expected.cend(),
+                           inputBU.cbegin()));
 }
