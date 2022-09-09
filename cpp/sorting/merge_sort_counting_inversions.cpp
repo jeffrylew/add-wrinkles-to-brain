@@ -16,6 +16,16 @@ void top_down_merge(long&                   num_inversions,
                     int                     iEnd,
                     std::vector<int>&       B);
 
+long countInversionsDS(std::vector<int>& arr,
+                       int               lo,
+                       int               hi,
+                       std::vector<int>& aux);
+
+long mergeDS(std::vector<int>&       arr,
+             int                     lo,
+             int                     hi,
+             const std::vector<int>& aux);
+
 //! @brief First attempt solution doesn't pass any test cases, needs work
 static long countInversionsFirstAttempt(std::vector<int> arr)
 {
@@ -111,6 +121,87 @@ void top_down_merge(long&                   num_inversions,
     } // for (int k = iBegin; ...
 
 } // void top_down_merge( ...
+
+static long countInversionsDiscussionSolution(std::vector<int> arr)
+{
+    if (arr.size() < 2ULL)
+    {
+        //! Vector of size 1 or less has no inversions
+        return num_inversions;
+    }
+    
+    //! Vector aux is a work vector, one-time copy of elements from arr to aux
+    auto aux = arr;
+    
+    return countInversionsDS(arr, 0, arr.size() - 1, aux);
+
+} // static long countInversionsDiscussionSolution( ...
+
+long countInversionsDS(std::vector<int>& arr,
+                       int               lo,
+                       int               hi,
+                       std::vector<int>& aux)
+{
+    if (lo >= hi)
+    {
+        return 0L;
+    }
+    
+    auto mid = lo + (hi - lo) / 2;
+    long num_inversions {};
+
+    num_inversions += countInversionsDS(aux, lo, mid, arr);
+    num_inversions += countInversionsDS(aux, mid + 1, hi, arr);
+    num_inversions += mergeDS(arr, lo, mid, hi, aux);
+
+    return num_inversions;
+
+} // long countInversionsDS( ...
+
+long mergeDS(std::vector<int>&       arr,
+             int                     lo,
+             int                     hi,
+             const std::vector<int>& aux)
+{
+    long num_inversions {};
+    int  i = lo;
+    int  j = mid + 1;
+    int  k = lo;
+
+    while (i <= mid || j <= hi)
+    {
+        if (i > mid)
+        {
+            //! True if j <= hi
+            //! Processed all elements in LHS so add elements from RHS
+            arr[k++] = aux[j++];
+        }
+        else if (j > hi)
+        {
+            //! True if i <= mid
+            //! Processed all elements in RHS so add elements from LHS
+            arr[k++] = aux[i++];
+        }
+        else if (aux[i] <= aux[j])
+        {
+            //! Can be true if elements remain in LHS and RHS
+            //! Element from LHS is smaller than element from RHS
+            //! No swapping so no inversions here
+            arr[k++] = aux[i++];
+        }
+        else
+        {
+            //! Can be true if elements remain in LHS and RHS
+            //! Element from LHS is greater than element from RHS
+            //! Need to swap, there are inversions
+            arr[k++]       = aux[j++];
+            num_inversions += mid + 1 - i;
+        }
+    }
+
+    return num_inversions;
+
+} // long mergeDS( ...
 
 // Test case 0
 TEST(CountInversionsTest, TestCase0) {
