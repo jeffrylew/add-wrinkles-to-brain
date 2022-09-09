@@ -6,6 +6,7 @@ set(
   "fraudulent_activity_notifications"
   "mark_and_toys"
   "merge_sort"
+  "merge_sort_counting_inversions"
   "selection_sort"
 )
 
