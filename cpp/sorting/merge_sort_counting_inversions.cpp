@@ -23,6 +23,7 @@ long countInversionsDS(std::vector<int>& arr,
 
 long mergeDS(std::vector<int>&       arr,
              int                     lo,
+             int                     mid,
              int                     hi,
              const std::vector<int>& aux);
 
@@ -122,14 +123,13 @@ void top_down_merge(long&                   num_inversions,
 
 } // void top_down_merge( ...
 
+//! @brief Solution from HR discussion section
+//! @param[in] arr Vector of ints to sort
+//! @return Number of inversions as a long
 static long countInversionsDiscussionSolution(std::vector<int> arr)
 {
-    if (arr.size() < 2ULL)
-    {
-        //! Vector of size 1 or less has no inversions
-        return num_inversions;
-    }
-    
+    //! @details https://www.hackerrank.com/challenges/ctci-merge-sort/forum
+
     //! Vector aux is a work vector, one-time copy of elements from arr to aux
     auto aux = arr;
     
@@ -160,6 +160,7 @@ long countInversionsDS(std::vector<int>& arr,
 
 long mergeDS(std::vector<int>&       arr,
              int                     lo,
+             int                     mid,
              int                     hi,
              const std::vector<int>& aux)
 {
@@ -208,6 +209,9 @@ TEST(CountInversionsTest, TestCase0) {
     EXPECT_EQ(0L, countInversionsFirstAttempt({1, 1, 1, 2, 2}));
     EXPECT_NE(4L, countInversionsFirstAttempt({2, 1, 3, 1, 2}));
     EXPECT_EQ(6L, countInversionsFirstAttempt({2, 1, 3, 1, 2}));
+
+    EXPECT_EQ(0L, countInversionsDiscussionSolution({1, 1, 1, 2, 2}));
+    EXPECT_EQ(4L, countInversionsDiscussionSolution({2, 1, 3, 1, 2}));
 }
 
 // Test case 1
@@ -215,6 +219,9 @@ TEST(CountInversionsTest, TestCase1) {
     EXPECT_EQ(1L, countInversionsFirstAttempt({1, 5, 3, 7}));
     EXPECT_NE(6L, countInversionsFirstAttempt({7, 5, 3, 1}));
     EXPECT_EQ(8L, countInversionsFirstAttempt({7, 5, 3, 1}));
+
+    EXPECT_EQ(1L, countInversionsDiscussionSolution({1, 5, 3, 7}));
+    EXPECT_EQ(6L, countInversionsDiscussionSolution({7, 5, 3, 1}));
 }
 
 // Test case 2
@@ -222,4 +229,7 @@ TEST(CountInversionsTest, TestCase2) {
     EXPECT_EQ(0L, countInversionsFirstAttempt({1, 3, 5, 7}));
     EXPECT_NE(3L, countInversionsFirstAttempt({3, 2, 1}));
     EXPECT_EQ(5L, countInversionsFirstAttempt({3, 2, 1}));
+
+    EXPECT_EQ(0L, countInversionsDiscussionSolution({1, 3, 5, 7}));
+    EXPECT_EQ(3L, countInversionsDiscussionSolution({3, 2, 1}));
 }
