@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "find_the_nearest_clone"
   "shortest_reach_in_a_graph"
 )
 
