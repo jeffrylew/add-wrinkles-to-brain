@@ -139,7 +139,7 @@ static int weightDS(const std::vector<std::vector<int>>& connected_nodes,
             return curr_dist;
         }
         
-        std::ignore = visited_nodes.emplace(curr_dist);
+        std::ignore = visited_nodes.emplace(curr_node);
 
         if (curr_dist == limit)
         {
