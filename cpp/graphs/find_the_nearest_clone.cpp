@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <queue>
 #include <tuple>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -186,7 +187,7 @@ static int findShortestDiscussionSolution(int               graph_nodes,
 
     std::vector<int> target_nodes {};
 
-    for (int node_idx = 0; i < static_cast<int>(ids.size()); ++i)
+    for (int node_idx = 0; node_idx < static_cast<int>(ids.size()); ++node_idx)
     {
         if (ids[node_idx] == static_cast<long>(val))
         {
