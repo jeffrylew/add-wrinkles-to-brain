@@ -14,6 +14,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
+add_subdirectory(algorithms)
 add_subdirectory(arrays)
 add_subdirectory(dynamic_programming)
 add_subdirectory(graphs)
