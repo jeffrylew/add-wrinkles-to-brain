@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "compare_the_triplets"
   "simple_array_sum"
 )
 
