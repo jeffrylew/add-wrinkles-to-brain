@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "connected_cell_in_a_grid"
   "find_the_nearest_clone"
   "shortest_reach_in_a_graph"
 )
