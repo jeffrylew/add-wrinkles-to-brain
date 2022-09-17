@@ -422,6 +422,52 @@ static int maxRegionFirstAttempt(std::vector<std::vector<int>> grid)
 
 } // static int maxRegionFirstAttempt( ...
 
+static int countCells(std::vector<std::vector<int>>& grid, int i, int j)
+{
+    if (i < 0
+        || j < 0
+        || i >= grid.size()
+        || j >= grid.front().size())
+    {
+        return 0;
+    }
+    
+    if (grid[i][j] == 0)
+    {
+        return 0;
+    }
+    
+    int count = grid[i][j]--;
+
+    count += countCells(grid, i + 1, j);
+    count += countCells(grid, i - 1, j);
+    count += countCells(grid, i, j + 1);
+    count += countCells(grid, i, j - 1);
+    count += countCells(grid, i + 1, j + 1);
+    count += countCells(grid, i - 1, j - 1);
+    count += countCells(grid, i - 1, j + 1);
+    count += countCells(grid, i + 1, j - 1);
+    return count;
+
+} // static int countCells( ...
+
+//! @brief Solution from HR discussion section
+static int maxRegionDiscussionSolution(std::vector<std::vector<int>> grid)
+{
+    int max_cells {};
+
+    for (int i = 0; i < grid.size(); ++i)
+    {
+        for (int j = 0; j < grid.front().size(); ++j)
+        {
+            max_cells = std::max(max_cells, countCells(grid, i, j));
+        }
+    }
+
+    return max_cells;
+
+} // static int maxRegionDiscussionSolution( ...
+
 // Test case 0
 TEST(MaxRegionTest, TestCase0) {
     const std::vector<std::vector<int>> grid {{1, 1, 0, 0},
@@ -430,6 +476,7 @@ TEST(MaxRegionTest, TestCase0) {
                                               {1, 0, 0, 0}};
     
     EXPECT_EQ(5, maxRegionFirstAttempt(grid));
+    EXPECT_EQ(5, maxRegionDiscussionSolution(grid));
 }
 
 // Test case 1
@@ -441,6 +488,7 @@ TEST(MaxRegionTest, TestCase1) {
                                               {1, 1, 0, 0}};
     
     EXPECT_EQ(8, maxRegionFirstAttempt(grid));
+    EXPECT_EQ(8, maxRegionDiscussionSolution(grid));
 }
 
 // Test case 7
@@ -452,4 +500,5 @@ TEST(MaxRegionTest, TestCase7) {
                                               {1, 1, 1, 0, 0}};
     
     EXPECT_EQ(10, maxRegionFirstAttempt(grid));
+    EXPECT_EQ(10, maxRegionDiscussionSolution(grid));
 }
