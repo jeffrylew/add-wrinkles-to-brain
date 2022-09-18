@@ -468,6 +468,62 @@ static int maxRegionDiscussionSolution(std::vector<std::vector<int>> grid)
 
 } // static int maxRegionDiscussionSolution( ...
 
+static int getRegionSize(std::vector<std::vector<int>>& grid, int row, int col)
+{
+    if (row < 0
+        || col < 0
+        || row >= grid.size()
+        || col >= grid.front().size())
+    {
+        return 0;
+    }
+    
+    if (0 == grid[row][col])
+    {
+        return 0;
+    }
+    
+    grid[row][col] = 0;
+
+    int region_size {1};
+
+    for (int r = row - 1; r <= row + 1; ++r)
+    {
+        for (int c = col - 1; c <= col + 1; ++c)
+        {
+            if (row == r && col == c)
+            {
+                continue;
+            }
+            region_size += getRegionSize(grid, r, c);
+        }
+    }
+
+    return region_size;
+
+} // static int getRegionSize( ...
+
+//! @brief Solution from HR editorial
+static int maxRegionEditorialSolution(std::vector<std::vector<int>> grid)
+{
+    int max_region {};
+
+    for (int row = 0; row < static_cast<int>(grid.size()); ++row)
+    {
+        for (int col = 0; col < static_cast<int>(grid.front().size()); ++col)
+        {
+            if (1 == grid[row][col])
+            {
+                const int region_size = getRegionSize(grid, row, col);
+                max_region            = std::max(region_size, max_region);
+            }
+        }
+    }
+
+    return max_region;
+
+} // static int maxRegionEditorialSolution( ...
+
 // Test case 0
 TEST(MaxRegionTest, TestCase0) {
     const std::vector<std::vector<int>> grid {{1, 1, 0, 0},
@@ -477,6 +533,7 @@ TEST(MaxRegionTest, TestCase0) {
     
     EXPECT_EQ(5, maxRegionFirstAttempt(grid));
     EXPECT_EQ(5, maxRegionDiscussionSolution(grid));
+    EXPECT_EQ(5, maxRegionEditorialSolution(grid));
 }
 
 // Test case 1
@@ -489,6 +546,7 @@ TEST(MaxRegionTest, TestCase1) {
     
     EXPECT_EQ(8, maxRegionFirstAttempt(grid));
     EXPECT_EQ(8, maxRegionDiscussionSolution(grid));
+    EXPECT_EQ(8, maxRegionEditorialSolution(grid));
 }
 
 // Test case 7
@@ -501,4 +559,5 @@ TEST(MaxRegionTest, TestCase7) {
     
     EXPECT_EQ(10, maxRegionFirstAttempt(grid));
     EXPECT_EQ(10, maxRegionDiscussionSolution(grid));
+    EXPECT_EQ(10, maxRegionEditorialSolution(grid));
 }
