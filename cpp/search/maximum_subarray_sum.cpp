@@ -73,6 +73,33 @@ static long maximumSumDiscussionSolution(std::vector<long> a, long m)
     
     std::set<long> s {};
     
+    //! From explanation at https://www.quora.com/
+    //!     What-is-the-logic-used-in-the-HackerRank-Maximise-Sum-problem
+    //! Quora answer defines
+    //!     prefix[n] = (a[0] + a[1] + ... + a[n]) % m
+    //! And the provided code is
+    //!     int curr = 0;
+    //!     for (int i = 0; i < n; ++i) {
+    //!         curr = (curr + a[i] % m) % m;
+    //!         prefix[i] = curr;
+    //!     }
+    //! For two elements it can be proved
+    //!     (a[0] + a[1]) % m = (a[0] % m + a[1] % m) % m
+    //! For three elements it can be proved
+    //!     (a[0] + a[1] + a[2]) % m = (a[0] % m + a[1] % m + a[2] % m) % m
+    //! The code above matches this
+    //!     i = 0: curr = (0 + a[0] % m) % m = a[0] % m
+    //!            prefix[0] = a[0] % m
+    //!     i = 1: curr = (a[0] % m + a[1] % m) % m, equal to (a[0] + a[1]) % m
+    //!            prefix[1] = (a[0] % m + a[1] % m) % m
+    //!     i = 2: curr = [(a[0] % m + a[1] % m) % m + a[2] % m] % m
+    //!                 = [(a[0] + a[1]) % m + a[2] % m] % m
+    //!            Let alpha = (a[0] + a[1]). Then
+    //!            curr = [alpha % m + a[2] % m] % m
+    //!                 = [alpha + a[2]] % m
+    //!                 = [(a[0] + a[1]) + a[2]] % m
+    //!
+    //! Need to confirm if code in loop below matches the above
     for (auto& ele : a)
     {
         sum = (sum + ele) % m;
