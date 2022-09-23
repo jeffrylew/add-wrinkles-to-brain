@@ -99,7 +99,28 @@ static long maximumSumDiscussionSolution(std::vector<long> a, long m)
     //!                 = [alpha + a[2]] % m
     //!                 = [(a[0] + a[1]) + a[2]] % m
     //!
-    //! Need to confirm if code in loop below matches the above
+    //! Code below for a = [3, 3, 9, 9, 5] and m = 7
+    //!     i = 0: sum = (0 + a[0]) % m = a[0] % m = 3
+    //!            a[0] = a[0] % m = 3
+    //!            max = max[-LONG_MIN, a[0] % m] = a[0] % m = 3
+    //!     i = 1: sum = (a[0] % m + a[1]) % m = (3 + 3) % 7 = 6
+    //!            a[1] = (a[0] % m + a[1]) % m = 6
+    //!            max = max[a[0] % m = 3, (a[0] % m + a[1]) % m = 6] = 6
+    //!     i = 2: sum = [(a[0] % m + a[1]) % m + a[2]] % m = (6 + 9) % 7 = 1
+    //!            a[2] = [(a[0] % m + a[1]) % m + a[2]] % m = 1
+    //!            max = max[(a[0] % m + a[1]) % m = 6,
+    //!                      [(a[0] % m + a[1]) % m + a[2]] % m = 1] = 6
+    //!     i = 3: sum = [[(a[0] % m + a[1]) % m + a[2]] % m + a[3]] % m
+    //!                = (1 + 9) % 7 = 3
+    //!            a[3] = [[(a[0] % m + a[1]) % m + a[2]] % m + a[3]] % m = 3
+    //!            max = max[(a[0] % m + a[1]) % m = 6,
+    //!                     [[(a[0] % m + a[1]) % m + a[2]] % m + a[3]] % m = 3]
+    //!                = 6
+    //!     i = 4: sum = [[[(a[0] % m + a[1]) % m + a[2]] % m + a[3]] % m
+    //!                + a[4]] % m = (3 + 5) % 7 = 1
+    //!            a[4] = sum = 1
+    //!            max = max(6, 1) = 6
+    //! So a = [3, 6, 1, 3, 1] and max = 6
     for (auto& ele : a)
     {
         sum = (sum + ele) % m;
@@ -107,6 +128,8 @@ static long maximumSumDiscussionSolution(std::vector<long> a, long m)
         max = std::max(max, sum);
     }
     
+    //! The above code determines modulos for sums over a[0:n] but we also need
+    //! to figure out modulos for sums over a[i:j]. 
     for (auto x : a)
     {
         auto p = s.insert(x);
