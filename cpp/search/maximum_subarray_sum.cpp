@@ -129,7 +129,35 @@ static long maximumSumDiscussionSolution(std::vector<long> a, long m)
     }
     
     //! The above code determines modulos for sums over a[0:n] but we also need
-    //! to figure out modulos for sums over a[i:j]. 
+    //! to figure out modulos for sums over a[i:j]. If larger index j has a
+    //! smaller prefix sum than any smaller index i then the sub-array (i, j]
+    //! can be the solution if its sum % m is the maximum value.
+    //! For example,
+    //!            i = 0, 1, 2, 3
+    //!         a[i] = 3, 2, 7, 4 and m = 7
+    //!    prefix[i] = 3, 5, 5, 2
+    //!
+    //! where prefix[i = 0] > prefix[j = 3]. The sub-array (0, 3] is a potential
+    //! solution. To get from prefix[i = 0] = 3 to prefix[j = 3] = 2, the value
+    //! of 6 or 6 plus a multiple of 7 had to be added within the sub-array.
+    //! So when the sum of this sub-array has modulo taken by 7, can get max.
+    //!         a[i = 0] = 3
+    //!                    3 + [2 + 7 + 4] = 3 + [13] -> 16
+    //!                    16 % 7 = 2 = a[j = 3]
+    //!    prefix[i = 0] = 3 -> prefix[j = 3] = 2
+    //! prefix[i = 0] = 3; 3 + (6 + 0)  = 9;   9 % 7 = 2 = prefix[j = 3] or
+    //! prefix[i = 0] = 3; 3 + (6 + 7)  = 16; 16 % 7 = 2 = prefix[j = 3] or
+    //! prefix[i = 0] = 3; 3 + (6 + 14) = 23; 23 % 7 = 2 = prefix[j = 3], etc.
+    //!
+    //! If the prefix array is sorted (using a set), just need to find the min
+    //! difference between all prefix sums where first index > second index.
+    //! Since the prefix set is in increasing order, the first index will be j.
+    //! Subtract this min difference from m to get the answer. e.g.
+    //!            i = 3, 0, 1, 2
+    //!         a[i] = 4, 3, 2, 7 and m = 7
+    //!    prefix[i] = 2, 3, 5, 5
+    //! where j = 3 > i = 0, prefix[i = 0] - prefix[j = 3] = 3 - 2 = 1
+    //! and m - 1 = 7 - 1 = 6
     for (auto x : a)
     {
         auto p = s.insert(x);
