@@ -122,9 +122,63 @@ static int maxSubArrayDC(std::vector<int> nums)
     return maxSubArrayDC(nums, 0, static_cast<int>(nums.size()) - 1);
 }
 
+//! @brief Helper function for recursive solution
+//! @param[in] nums     Reference to vector containing at least one number
+//! @param[in] idx      Index of current element
+//! @param[in] mustPick If true, pick current element and return 0 or recurse
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayRecursive(const std::vector<int>& nums,
+                                int                     idx,
+                                bool                    mustPick)
+{
+    //! @details At each index idx, can either pick current element or not
+    //!          If pick element then all future elements must be picked since
+    //!          sub-array must be contiguous.
+    //!          If picked any elements till now, can either end recursion by
+    //!          returning sum formed till now or choose current element and
+    //!          recurse further. This denotes two choices of choosing sub-array
+    //!          formed from 1st picked element till now or expanding sub-array
+    //!          by choosing current element.
+
+    //! Sub-array must contain at least one element
+    //! If mustPick is false at end, no element is picked - not a valid case
+    if (idx >= static_cast<int>(nums.size()))
+    {
+        return mustPick ? 0 : -1e5;
+    }
+    
+    if (mustPick)
+    {
+        //! Either stop here or choose current element and recurse
+        return std::max(0, nums[i] + maxSubArrayRecursive(nums, idx + 1, true));
+    }
+    
+    //! Try both choosing current element or not choosing
+    return std::max(maxSubArrayRecursive(nums, idx + 1, false),
+                    nums[i] + maxSubArrayRecursive(nums, i + 1, true));
+
+} // static int maxSubArrayRecursive( ...
+
+//! @brief Recursive solution from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayRecursive(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(N^2) since consider every subarray sum and
+    //!          picking max. Space complexity O(N) for recursive stack space.
+    //!          (Worse than Brute Force, which has space complexity O(1))
+
+    return maxSubArrayRecursive(nums, 0, false);
+}
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDP({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDC({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayRecursive({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
