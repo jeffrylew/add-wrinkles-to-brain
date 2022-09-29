@@ -150,12 +150,13 @@ static int maxSubArrayRecursive(const std::vector<int>& nums,
     if (mustPick)
     {
         //! Either stop here or choose current element and recurse
-        return std::max(0, nums[i] + maxSubArrayRecursive(nums, idx + 1, true));
+        return std::max(0,
+                        nums[idx] + maxSubArrayRecursive(nums, idx + 1, true));
     }
     
     //! Try both choosing current element or not choosing
     return std::max(maxSubArrayRecursive(nums, idx + 1, false),
-                    nums[i] + maxSubArrayRecursive(nums, i + 1, true));
+                    nums[idx] + maxSubArrayRecursive(nums, idx + 1, true));
 
 } // static int maxSubArrayRecursive( ...
 
@@ -175,10 +176,61 @@ static int maxSubArrayRecursive(std::vector<int> nums)
     return maxSubArrayRecursive(nums, 0, false);
 }
 
+//! @brief Helper function for dynamic programming with memoization solution
+//! @param[in]     nums     Reference to vector containing at least one number
+//! @param[in]     idx      Index of current element
+//! @param[in]     mustPick If true, pick current element
+//! @param[in,out] dp       dp[mustPick][idx] = max sum subarray starting at idx
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayDPMemo(const std::vector<int>&        nums,
+                             int                            idx,
+                             bool                           mustPick,
+                             std::vector<std::vector<int>>& dp)
+{
+    if (idx >= static_cast<int>(nums.size()))
+    {
+        return mustPick ? 0 : -1e5;
+    }
+    
+    if (dp[mustPick][idx] != -1)
+    {
+        return dp[mustPick][idx];
+    }
+
+    if (mustPick)
+    {
+        return dp[mustPick][idx] =
+            std::max(0, nums[idx] + maxSubArrayDPMemo(nums, idx + 1, true, dp));
+    }
+    
+    return dp[mustPick][idx] =
+        std::max(maxSubArrayDPMemo(nums, idx + 1, false, dp),
+                 nums[idx] + maxSubArrayDPMemo(nums, idx + 1, true, dp));
+
+} // static int maxSubArrayDPMemo( ...
+
+//! @brief Dynamic programming with memoization solution from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayDPMemo(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(N) - calculate each state of dp (2N total)
+    //!          and memoize result, returning them in future recursive calls.
+    //!          Space complexity O(N) for recursive stack space.
+
+    std::vector<std::vector<int>> dp(2, std::vector<int>(nums.size(), -1));
+    return maxSubArrayDPMemo(nums, 0, false, dp);
+}
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDP({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDC({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayRecursive({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayDPMemo({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
