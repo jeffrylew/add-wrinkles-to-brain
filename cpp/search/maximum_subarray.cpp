@@ -251,6 +251,28 @@ static int maxSubArrayDPTabulation(std::vector<int> nums)
 
 } // static int maxSubArrayDPTabulation( ...
 
+//! @brief Dynamic programming, iterative solution from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayDPIterative(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(N). Iterate over nums once to compute dp and
+    //!          once more over dp at end to find max sub-array sum.
+    //!          Space complexity O(N) for maintaining dp
+
+    auto dp = nums;
+    for (int i = 1; i < static_cast<int>(nums.size()); ++i)
+    {
+        dp[i] = std::max(nums[i], nums[i] + dp[i - 1]);
+    }
+    return *std::max_element(dp.cbegin(), dp.cend());
+
+} // static int maxSubArrayDPIterative( ...
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
@@ -259,4 +281,5 @@ TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArrayRecursive({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDPMemo({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDPTabulation({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayDPIterative({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
