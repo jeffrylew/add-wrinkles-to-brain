@@ -285,6 +285,36 @@ static int maxSubArrayDPIterative(std::vector<int> nums)
 
 } // static int maxSubArrayDPIterative( ...
 
+//! @brief Another implementation of Kadane's Algorithm from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayKadanesAlg(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(N), iterating over nums once
+    //!          Space complexity O(1) for constant extra space used (no dp vec)
+
+    //! Max sub-array sum ending at i
+    int currMax {};
+
+    //! Max sub-array sum seen till now
+    int maxTillNow {std::numeric_limits<int>::min()};
+
+    //! Instead of maintaining dp vector of N elements, store max at each
+    //! iteration instead of calculating it separately at the end
+    for (auto i : nums)
+    {
+        currMax    = std::max(i, currMax + i);
+        maxTillNow = std::max(maxTillNow, currMax);
+    }
+
+    return maxTillNow;
+
+} // static int maxSubArrayKadanesAlg( ...
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
@@ -294,4 +324,5 @@ TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArrayDPMemo({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDPTabulation({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDPIterative({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayKadanesAlg({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
