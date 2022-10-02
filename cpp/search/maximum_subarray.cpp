@@ -315,6 +315,76 @@ static int maxSubArrayKadanesAlg(std::vector<int> nums)
 
 } // static int maxSubArrayKadanesAlg( ...
 
+//! @brief Recursive helper function for second divide and conquer solution
+//! @param[in] nums Reference to vector containing at least one number
+//! @param[in] L    Left index to search from
+//! @param[in] R    Right index to search from
+//! @return Largest sum of contiguous sub-array
+static int maxSubArrayDC2(const std::vector<int>& nums, int L, int R)
+{
+    //! @details Max sub-array sum is either
+    //! - Entirely in left half of array [L, mid - 1] OR
+    //! - Entirely in right half of array [mid + 1, R] OR
+    //! - In array consisting of middle element along with part of left half and
+    //!   part of right half such that these form contiguous sub-array
+    //!   [L', R'] = [L', mid - 1] + [mid] + [mid + 1, R'] and L' >= L, R' <= R
+
+    if (L > R)
+    {
+        return std::numeric_limits<int>::min();
+    }
+    
+    //! Middle element index
+    int mid {L + (R - L) / 2};
+
+    //! Max sub-array sum in [L, mid - 1] starting from mid - 1
+    int leftSum {};
+
+    //! Max sub-array sum in [mid + 1, R] starting from mid + 1
+    int rightSum {};
+
+    int currSum {};
+    for (int i = mid - 1; i >= L; --i)
+    {
+        currSum += nums[i];
+        leftSum =  std::max(leftSum, currSum);
+    }
+    
+    currSum = 0;
+    for (int i = mid + 1; i <= R; ++i)
+    {
+        currSum  += nums[i];
+        rightSum =  std::max(rightSum, currSum);
+    }
+    
+    //! Return max of 3 cases using C++14 std::max(std::initializer_list<T> lst)
+    return std::max({maxSubArrayDC2(nums, L, mid - 1),
+                     maxSubArrayDC2(nums, mid + 1, R),
+                     leftSum + nums[mid] + rightSum});
+
+} // static int maxSubArrayDC2( ...
+
+//! @brief Another divide and conquer solution from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayDC2(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(NlogN). Recurrence relation can be written as
+    //!          T(N) = 2T(N/2) + O(N) since we are recurring for left and right
+    //!          halves, 2T(N/2), and also calculating max sub-array including
+    //!          middle element which takes O(N). This recurrence relation is
+    //!          solved using the master theorem for divide-and-conquer
+    //!          recurrences to get O(NlogN), https://en.wikipedia.org/wiki/
+    //!              Master_theorem_(analysis_of_algorithms)
+    //!          Space complexity O(logN) for recursive stack
+
+    return maxSubArrayDC2(nums, 0, static_cast<int>(nums.size()) - 1);
+}
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
@@ -325,4 +395,5 @@ TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArrayDPTabulation({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDPIterative({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayKadanesAlg({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayDC2({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
