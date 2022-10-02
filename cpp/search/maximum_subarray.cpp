@@ -244,7 +244,16 @@ static int maxSubArrayDPTabulation(std::vector<int> nums)
 
     for (int i = 1; i < static_cast<int>(nums.size()); ++i)
     {
+        //! dp[1][i] denotes max sub-array sum ending at i (including nums[i])
+        //! Update as max between only picking current element nums[i] or
+        //! extending from previous sub-array and choosing current nums[i] too
+        //! i.e. dp[1][i - 1] + nums[i]
+        //! This row can be removed in maxSubArrayDPIterative solution below
         dp[1][i] = std::max(nums[i], nums[i] + dp[1][i - 1]);
+
+        //! dp[0][i] denotes max sub-array sum up to i (may not include nums[i])
+        //! Update as max between sub-array sum up to last index dp[0][i - 1] or
+        //! max sub-array sum found ending at current index dp[1][i]
         dp[0][i] = std::max(dp[0][i - 1], dp[1][i]);
     }
     return dp[0].back();
@@ -267,6 +276,9 @@ static int maxSubArrayDPIterative(std::vector<int> nums)
     auto dp = nums;
     for (int i = 1; i < static_cast<int>(nums.size()); ++i)
     {
+        //! dp[1][i] from maxSubArrayDPTabulation solution above was the max
+        //! sub-array sum ending at i. Store it in dp[i] and find the overall
+        //! max sub-array sum at the end
         dp[i] = std::max(nums[i], nums[i] + dp[i - 1]);
     }
     return *std::max_element(dp.cbegin(), dp.cend());
