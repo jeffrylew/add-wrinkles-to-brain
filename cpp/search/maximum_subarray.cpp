@@ -385,6 +385,72 @@ static int maxSubArrayDC2(std::vector<int> nums)
     return maxSubArrayDC2(nums, 0, static_cast<int>(nums.size()) - 1);
 }
 
+//! @brief Recursive helper function for third divide and conquer solution
+//! @param[in] prefix prefix[i] is max sum sub-array ending at i
+//! @param[in] suffix suffix[i] is max sum sub-array starting at i
+//! @param[in] nums   Reference to vector containing at least one number
+//! @param[in] L      Left index to search from
+//! @param[in] R      Right index to search from
+//! @return Largest sum of contiguous sub-array
+static int maxSubArrayDC3(const std::vector<int>& prefix,
+                          const std::vector<int>& suffix,
+                          const std::vector<int>& nums,
+                          int                     L,
+                          int                     R)
+{
+    if (L == R)
+    {
+        return nums[L];
+    }
+
+    int mid = L + (R - L) / 2;
+    
+    return std::max({maxSubArrayDC3(prefix, suffix, nums, L, mid),
+                     maxSubArrayDC3(prefix, suffix, nums, mid + 1, R),
+                     prefix[mid] + suffix[mid + 1]});
+
+} // static int maxSubArrayDC3( ...
+
+//! @brief Optimized divide and conquer solution from LC
+//! @param[in] nums Vector containing at least one number
+//! @return Largest sum of contiguous subarray
+static int maxSubArrayDC3(std::vector<int> nums)
+{
+    //! @details https://leetcode.com/problems/maximum-subarray/discuss/1595195/
+    //!          C%2B%2BPython-7-Simple-Solutions-w-Explanation-or-Brute-Force-
+    //!          %2B-DP-%2B-Kadane-%2B-Divide-and-Conquer
+    //!
+    //!          Time complexity O(N). Recurrence relation can be written as
+    //!          T(N) = 2T(N/2) + O(1) since we are recurring for left and right
+    //!          halves, 2T(N/2), and are calculating max sub-array including
+    //!          middle element which takes O(1). This recurrence relation is
+    //!          solved using the master theorem for divide-and-conquer
+    //!          recurrences to get O(N), https://en.wikipedia.org/wiki/
+    //!              Master_theorem_(analysis_of_algorithms)
+    //!          Space complexity O(N) for pre and suf
+
+    //! pre[i] is max sum sub-array ending at i
+    auto pre = nums;
+
+    //! suf[i] is max sum sub-array starting at i
+    auto suf = nums;
+
+    const auto nums_size = static_cast<int>(nums.size());
+
+    for (int i = 1; i < nums_size; ++i)
+    {
+        pre[i] += std::max(0, pre[i - 1]);
+    }
+    
+    for (int i = nums_size - 2; i >= 0; --i)
+    {
+        suf[i] += std::max(0, suf[i + 1]);
+    }
+
+    return maxSubArrayDC3(pre, suf, nums, 0, nums_size - 1);
+    
+} // static int maxSubArrayDC3( ...
+
 // LC Test case
 TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArray({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
@@ -396,4 +462,5 @@ TEST(MaxSubArrayTest, LCTest) {
     EXPECT_EQ(6, maxSubArrayDPIterative({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayKadanesAlg({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
     EXPECT_EQ(6, maxSubArrayDC2({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
+    EXPECT_EQ(6, maxSubArrayDC3({-2, 1, -3, 4, -1, 2, 1, -5, 4}));
 }
