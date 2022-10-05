@@ -34,12 +34,60 @@ static std::vector<long> riddleFirstAttempt(std::vector<long> arr)
 
 } // static std::vector<long> riddleFirstAttempt( ...
 
+//! @brief Second attempt solution still segfaults for Test cases 2-4
+//! @param[in] arr Vector of numbers
+//! @return Maximum of the minimum(s) of every window size
+static std::vector<long> riddleSecondAttempt(std::vector<long> arr)
+{
+    std::vector<std::vector<long>> dp(
+        arr.size(), std::vector<long>(arr.size(), -1L));
+    
+    //! Initialize first row of dp
+    dp.front() = arr;
+
+    //! Output vector of maximum values
+    //! Initialize with max value from arr
+    std::vector<long> max_mins {};
+    max_mins.reserve(arr.size());
+    max_mins.emplace_back(*std::max_element(arr.cbegin(), arr.cend()));
+
+    //! Keep track of max value in each row
+    long row_max {-1L};
+    
+    for (int row = 1; row < static_cast<int>(arr.size()); ++row)
+    {
+        row_max = -1L;
+
+        for (int col = row; col < static_cast<int>(arr.size()); ++col)
+        {
+            dp[row][col] = std::min(dp[row - 1][col - 1], arr[col]);
+
+            if (dp[row][col] > row_max)
+            {
+                row_max = dp[row][col];
+            }
+        }
+
+        //! Add row maximum to output vector
+        max_mins.emplace_back(row_max);
+    }
+
+    return max_mins;
+
+} // static std::vector<long> riddleSecondAttempt( ...
+
 // Test case 6
 TEST(RiddleTest, TestCase6) {
     const std::vector<long> input {2L, 6L, 1L, 12L};
     const std::vector<long> expected_output {12L, 2L, 1L, 1L};
 
     auto result = riddleFirstAttempt(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
+
+    result = riddleSecondAttempt(input);
 
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
@@ -56,6 +104,12 @@ TEST(RiddleTest, TestCase7) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            result.cbegin()));
+
+    result = riddleSecondAttempt(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
 }
 
 // Test case 8
@@ -64,6 +118,12 @@ TEST(RiddleTest, TestCase8) {
     const std::vector<long> expected_output {7L, 6L, 4L, 4L, 3L, 2L};
 
     auto result = riddleFirstAttempt(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
+
+    result = riddleSecondAttempt(input);
 
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
