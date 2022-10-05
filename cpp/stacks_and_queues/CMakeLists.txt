@@ -3,6 +3,7 @@ set(
   "a_tale_of_two_stacks"
   "balanced_brackets"
   "largest_rectangle"
+  "min_max_riddle"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
