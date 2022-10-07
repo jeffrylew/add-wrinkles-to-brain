@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <stack>
 #include <vector>
 
 //! @brief First attempt solution segfaults for Test cases 2-4 but passes others
@@ -76,6 +77,50 @@ static std::vector<long> riddleSecondAttempt(std::vector<long> arr)
 
 } // static std::vector<long> riddleSecondAttempt( ...
 
+//! @brief Solution from HR discussion section
+//! @param[in] arr Vector of numbers
+//! @return Maximum of the minimum(s) of every window size
+static std::vector<long> riddleDS(std::vector<long> arr)
+{
+    //! @details https://www.hackerrank.com/challenges/min-max-riddle/forum
+
+    arr.push_back(-1L);
+
+    int arr_size {static_cast<int>(arr.size())};
+    int idx {};
+
+    //! Output vector of maximum values
+    std::vector<long> max_mins(arr.size() - 1ULL);
+
+    std::stack<long> st {};
+
+    while (idx < arr_size)
+    {
+        if (st.empty() || arr[idx] > arr[st.top()])
+        {
+            st.push(idx++);
+        }
+        else
+        {
+            auto val = arr[st.top()];
+            st.pop();
+
+            int len = st.empty() ? idx : idx - st.top() - 1;
+
+            max_mins[len - 1] = std::max(val, max_mins[len - 1]);
+        }
+
+    } //while (idx < arr_size)
+
+    for (int i =  arr_size - 3; i >= 0; --i)
+    {
+        max_mins[i] = std::max(max_mins[i], max_mins[i + 1]);
+    }
+    
+    return max_mins;
+
+} // static std::vector<long> riddleDS( ...
+
 // Test case 6
 TEST(RiddleTest, TestCase6) {
     const std::vector<long> input {2L, 6L, 1L, 12L};
@@ -88,6 +133,12 @@ TEST(RiddleTest, TestCase6) {
                            result.cbegin()));
 
     result = riddleSecondAttempt(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
+
+    result = riddleDS(input);
 
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
@@ -110,6 +161,12 @@ TEST(RiddleTest, TestCase7) {
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            result.cbegin()));
+    
+    result = riddleDS(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
 }
 
 // Test case 8
@@ -124,6 +181,12 @@ TEST(RiddleTest, TestCase8) {
                            result.cbegin()));
 
     result = riddleSecondAttempt(input);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
+
+    result = riddleDS(input);
 
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
