@@ -46,14 +46,43 @@ static int fibonacciMemoized(int n)
     return fibonacciMemoized(n, fib_map);
 }
 
+static int fibonacciIterative(int n)
+{
+    //! Initialize n - 2 and n - 1 Fibonacci numbers
+    int n_2 {0};
+    if (0 == n)
+    {
+        return n_2;
+    }
+    
+    int n_1 {1};
+    if (1 == n)
+    {
+        return n_1;
+    }
+
+    int fib_at_i {};
+    for (int i = 2; i <= n; ++i)
+    {
+        fib_at_i = n_1 + n_2;
+        n_2      = n_1;
+        n_1      = fib_at_i;
+    }
+    
+    return fib_at_i;
+
+} // static int fibonacciIterative( ...
+
 // Test case 2
 TEST(FibonacciTest, TestCase2) {
     EXPECT_EQ(5, fibonacci(5));
     EXPECT_EQ(5, fibonacciMemoized(5));
+    EXPECT_EQ(5, fibonacciIterative(5));
 }
 
 // Test case 4
 TEST(FibonacciTest, TestCase4) {
     EXPECT_EQ(144, fibonacci(12));
     EXPECT_EQ(144, fibonacciMemoized(12));
+    EXPECT_EQ(144, fibonacciIterative(12));
 }
