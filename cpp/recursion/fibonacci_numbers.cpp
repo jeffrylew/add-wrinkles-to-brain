@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <array>
 #include <map>
 #include <tuple>
 
@@ -73,11 +74,28 @@ static int fibonacciIterative(int n)
 
 } // static int fibonacciIterative( ...
 
+//! @brief Iterative solution from HR discussion section
+static int fibonacciDSIterative(int n)
+{
+    //! @details O(n) time complexity, O(1) space complexity
+
+    std::array<int, 2> fib {{0, 1}};
+
+    for (int i = 0; i <= n; ++i)
+    {
+        fib[i % 2] = fib[0] + fib[1];
+    }
+    
+    return fib[n % 2];
+
+} // static int fibonacciDSIterative( ...
+
 // Test case 2
 TEST(FibonacciTest, TestCase2) {
     EXPECT_EQ(5, fibonacci(5));
     EXPECT_EQ(5, fibonacciMemoized(5));
     EXPECT_EQ(5, fibonacciIterative(5));
+    EXPECT_EQ(5, fibonacciDSIterative(5));
 }
 
 // Test case 4
@@ -85,4 +103,5 @@ TEST(FibonacciTest, TestCase4) {
     EXPECT_EQ(144, fibonacci(12));
     EXPECT_EQ(144, fibonacciMemoized(12));
     EXPECT_EQ(144, fibonacciIterative(12));
+    EXPECT_EQ(144, fibonacciDSIterative(12));
 }
