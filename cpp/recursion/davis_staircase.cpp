@@ -79,6 +79,8 @@ static int stepPermsDP(int n)
 {
     //! @details
     //!     https://www.hackerrank.com/challenges/ctci-recursive-staircase/forum
+    //!
+    //! O(n) time complexity, O(n) space complexity
 
     std::vector<int> dp(static_cast<std::size_t>(std::max(n + 1, 4)));
     dp[1] = 1;
@@ -94,6 +96,32 @@ static int stepPermsDP(int n)
 
 } // static int stepPermsDP( ...
 
+//! @brief Optimized dynamic programming solution from HR discussion section
+//! @param[in] n Number of stairs in the staircase
+//! @return Number of ways Davis can climb staircase
+static int stepPermsDPOptimized(int n)
+{
+    //! @details
+    //!     https://www.hackerrank.com/challenges/ctci-recursive-staircase/forum
+    //!
+    //! O(n) time complexity, O(1) space complexity
+
+    std::vector<int> dp {1, 2, 4};
+
+    if (n > 0 && n < 4)
+    {
+        return dp[n - 1];
+    }
+    
+    for (int i = 3; i < n; ++i)
+    {
+        dp[i % 3] = dp[0] + dp[1] + dp[2];
+    }
+    
+    return dp[(n - 1) % 3];
+
+} // static int stepPermsDPOptimized( ...
+
 // Test case 0
 TEST(StepPermsTest, TestCase0) {
     EXPECT_EQ(1, stepPermsFirstAttempt(1));
@@ -107,6 +135,10 @@ TEST(StepPermsTest, TestCase0) {
     EXPECT_EQ(1, stepPermsDP(1));
     EXPECT_EQ(4, stepPermsDP(3));
     EXPECT_EQ(44, stepPermsDP(7));
+
+    EXPECT_EQ(1, stepPermsDPOptimized(1));
+    EXPECT_EQ(4, stepPermsDPOptimized(3));
+    EXPECT_EQ(44, stepPermsDPOptimized(7));
 }
 
 // Test case 9
@@ -119,6 +151,9 @@ TEST(StepPermsTest, TestCase9) {
 
     EXPECT_EQ(13, stepPermsDP(5));
     EXPECT_EQ(81, stepPermsDP(8));
+
+    EXPECT_EQ(13, stepPermsDPOptimized(5));
+    EXPECT_EQ(81, stepPermsDPOptimized(8));
 }
 
 // Test case 10
@@ -134,4 +169,8 @@ TEST(StepPermsTest, TestCase10) {
     EXPECT_EQ(5768, stepPermsDP(15));
     EXPECT_EQ(121415, stepPermsDP(20));
     EXPECT_EQ(8646064, stepPermsDP(27));
+
+    EXPECT_EQ(5768, stepPermsDPOptimized(15));
+    EXPECT_EQ(121415, stepPermsDPOptimized(20));
+    EXPECT_EQ(8646064, stepPermsDPOptimized(27));
 }
