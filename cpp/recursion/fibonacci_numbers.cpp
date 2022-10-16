@@ -81,7 +81,7 @@ static int fibonacciDSIterative(int n)
 
     std::array<int, 2> fib {{0, 1}};
 
-    for (int i = 0; i <= n; ++i)
+    for (int i = 2; i <= n; ++i)
     {
         fib[i % 2] = fib[0] + fib[1];
     }
