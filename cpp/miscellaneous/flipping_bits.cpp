@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <cmath>
+#include <cstdint>
 
 static long flippingBits(long n)
 {
@@ -56,6 +57,20 @@ static long flippingBitsDS2(long n)
     return n ^ all_ones;
 }
 
+//! @brief Third solution from HR discussion section
+//! @param[in] n Number whose bits needs to be flipped
+//! @return Number with flipped bits as a long
+static long flippingBitsDS3(long n)
+{
+    //! @details https://www.hackerrank.com/challenges/flipping-bits/forum
+    //!          https://en.cppreference.com/w/cpp/language/operator_arithmetic
+    //!
+    //!          bitwise NOT operator is ~a
+
+    const auto output = static_cast<std::uint32_t>(n);
+    return static_cast<long>(~output);
+}
+
 // Test case 0
 TEST(FlippingBitsTest, TestCase0) {
     EXPECT_EQ(2147483648L, flippingBits(2147483647L));
@@ -69,6 +84,10 @@ TEST(FlippingBitsTest, TestCase0) {
     EXPECT_EQ(2147483648L, flippingBitsDS2(2147483647L));
     EXPECT_EQ(4294967294L, flippingBitsDS2(1L));
     EXPECT_EQ(4294967295L, flippingBitsDS2(0L));
+
+    EXPECT_EQ(2147483648L, flippingBitsDS3(2147483647L));
+    EXPECT_EQ(4294967294L, flippingBitsDS3(1L));
+    EXPECT_EQ(4294967295L, flippingBitsDS3(0L));
 }
 
 // Test case 10
@@ -81,6 +100,9 @@ TEST(FlippingBitsTest, TestCase10) {
 
     EXPECT_EQ(4294967291L, flippingBitsDS2(4L));
     EXPECT_EQ(4294843839L, flippingBitsDS2(123456L));
+
+    EXPECT_EQ(4294967291L, flippingBitsDS3(4L));
+    EXPECT_EQ(4294843839L, flippingBitsDS3(123456L));
 }
 
 // Test case 11
@@ -96,4 +118,8 @@ TEST(FlippingBitsTest, TestCase11) {
     EXPECT_EQ(4294967295L, flippingBitsDS2(0L));
     EXPECT_EQ(3492223820L, flippingBitsDS2(802743475L));
     EXPECT_EQ(4259365872L, flippingBitsDS2(35601423L));
+
+    EXPECT_EQ(4294967295L, flippingBitsDS3(0L));
+    EXPECT_EQ(3492223820L, flippingBitsDS3(802743475L));
+    EXPECT_EQ(4259365872L, flippingBitsDS3(35601423L));
 }
