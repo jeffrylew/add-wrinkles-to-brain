@@ -2,6 +2,7 @@ set(
   hr_puzzles
   "a_very_big_sum"
   "compare_the_triplets"
+  "plus_minus"
   "simple_array_sum"
 )
 
