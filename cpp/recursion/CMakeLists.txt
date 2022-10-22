@@ -1,5 +1,6 @@
 set(
   hr_puzzles
+  "crossword_puzzle"
   "davis_staircase"
   "fibonacci_numbers"
 )
