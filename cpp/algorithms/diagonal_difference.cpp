@@ -54,8 +54,30 @@ static int diagonalDifferenceDS(std::vector<std::vector<int>> arr)
 
 } // static int diagonalDifferenceDS( ...
 
+//! @brief Another solution from HR discussion section
+//! @param[in] arr 2D vector of integers
+//! @return The absolute diagonal difference
+static int diagonalDifferenceDS2(std::vector<std::vector<int>> arr)
+{
+    //! Square matrix
+    const auto arr_size = static_cast<int>(arr.size());
+
+    int left {};
+    int right {};
+
+    for (int i = 0; i < arr_size; ++i)
+    {
+        left  += arr[i][i];
+        right += arr[i][arr_size - i - 1];
+    }
+    
+    return std::abs(left - right);
+
+} // static int diagonalDifferenceDS2( ...
+
 // Test case 0
 TEST(DiagonalDifferenceTest, TestCase0) {
     EXPECT_EQ(15, diagonalDifference({{11, 2, 4}, {4, 5, 6}, {10, 8, -12}}));
     EXPECT_EQ(15, diagonalDifferenceDS({{11, 2, 4}, {4, 5, 6}, {10, 8, -12}}));
+    EXPECT_EQ(15, diagonalDifferenceDS2({{11, 2, 4}, {4, 5, 6}, {10, 8, -12}}));
 }
