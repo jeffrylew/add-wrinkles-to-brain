@@ -1,8 +1,14 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <sstream>
 #include <string>
+#include <tuple>
 #include <vector>
+
+//! Type alias for 2D vectors for horizontal and vertical words
+using Vecs_ref_t = std::tuple<std::vector<std::vector<char&>>,
+                              std::vector<std::vector<char&>>>;
 
 //! @brief Tokenize input string into vector
 //! @param[in] input String to split
@@ -25,6 +31,24 @@ static std::vector<std::string> split(std::string input, char delim)
     return output;
 
 } // static std::vector<std::string> split( ...
+
+//! @brief Reset 2D vector of char refs to crossword to contain original '-'
+//! @param[out] tuple_vecs Reference to Vecs_ref_t
+static void reset(Vecs_ref_t& tuple_vecs)
+{
+    auto& horiz_words = std::get<0>(tuple_vecs);
+    auto& vert_words  = std::get<1>(tuple_vecs);
+
+    for (auto& char_vec : horiz_words)
+    {
+        std::fill(char_vec.begin(), char_vec.end(), '-');
+    }
+
+    for (auto& char_vec : vert_words)
+    {
+        std::fill(char_vec.begin(), char_vec.end(), '-');
+    }
+}
 
 //! @brief First attempt solution
 static std::vector<std::string> crosswordPuzzleFirstAttempt(
