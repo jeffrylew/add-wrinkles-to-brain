@@ -5,6 +5,7 @@ set(
   "diagonal_difference"
   "plus_minus"
   "simple_array_sum"
+  "staircase"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
