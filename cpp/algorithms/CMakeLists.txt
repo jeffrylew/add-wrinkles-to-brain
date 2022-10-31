@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "a_very_big_sum"
+  "birthday_cake_candles"
   "compare_the_triplets"
   "diagonal_difference"
   "plus_minus"
