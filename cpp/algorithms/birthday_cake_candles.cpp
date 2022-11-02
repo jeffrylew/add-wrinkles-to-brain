@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <vector>
 
 static int birthdayCakeCandles(std::vector<int> candles)
@@ -99,9 +100,20 @@ static int birthdayCakeCandlesDS2(std::vector<int> candles)
 
 } // static int birthdayCakeCandlesDS2( ...
 
+//! @brief Third solution from HR discussion section using STL functions, O(2n)
+//! @param[in] candles Vector of candle heights
+//! @return Number of candles that are tallest
+static int birthdayCakeCandlesDS3(std::vector<int> candles)
+{
+    return std::count(candles.cbegin(),
+                      candles.cend(),
+                      *std::max_element(candles.cbegin(), candles.cend()));
+}
+
 // Test case 0
 TEST(BirthdayCakeCandlesTest, TestCase0) {
     EXPECT_EQ(2, birthdayCakeCandles({3, 2, 1, 3}));
     EXPECT_EQ(2, birthdayCakeCandlesDS1({3, 2, 1, 3}));
     EXPECT_EQ(2, birthdayCakeCandlesDS2({3, 2, 1, 3}));
+    EXPECT_EQ(2, birthdayCakeCandlesDS3({3, 2, 1, 3}));
 }
