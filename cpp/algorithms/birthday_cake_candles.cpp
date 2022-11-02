@@ -69,8 +69,39 @@ static int birthdayCakeCandlesDS1(std::vector<int> candles)
 
 } // static int birthdayCakeCandlesDS1( ...
 
+//! @brief Another solution from HR discussion section, O(2n) time complexity
+//! @param[in] candles Vector of candle heights
+//! @return Number of candles that are tallest
+static int birthdayCakeCandlesDS2(std::vector<int> candles)
+{
+    int max {candles.front()};
+    int count {};
+    
+    const auto candles_size = static_cast<int>(candles.size());
+
+    for (int i = 0; i < candles_size; ++i)
+    {
+        if (candles[i] > max)
+        {
+            max = candles[i];
+        }
+    }
+
+    for (int i = 0; i < candles_size; ++i)
+    {
+        if (candles[i] == max)
+        {
+            ++count;
+        }
+    }
+
+    return count;
+
+} // static int birthdayCakeCandlesDS2( ...
+
 // Test case 0
 TEST(BirthdayCakeCandlesTest, TestCase0) {
     EXPECT_EQ(2, birthdayCakeCandles({3, 2, 1, 3}));
     EXPECT_EQ(2, birthdayCakeCandlesDS1({3, 2, 1, 3}));
+    EXPECT_EQ(2, birthdayCakeCandlesDS2({3, 2, 1, 3}));
 }
