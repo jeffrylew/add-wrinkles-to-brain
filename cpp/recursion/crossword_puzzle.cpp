@@ -50,6 +50,54 @@ static void reset(Vecs_ref_t& tuple_vecs)
     }
 }
 
+//! @brief Populate vecs_ref from crossword
+//! @param[in,out] crossword Reference to vector of 10 strings
+//! @param[out]    vecs_ref  Reference to Vecs_ref_t
+static void populate_refs(std::vector<std::string>& crossword,
+                          Vecs_ref_t&               vecs_ref)
+{
+    //! Vector of words in rows
+    auto& row_words = std::get<0>(vecs_ref);
+    
+    //! Vector of words in cols
+    auto& col_words = std::get<1>(vecs_ref);
+    
+    //! Populate row_words
+    for (int row = 0; row < crossword.size(); ++row)
+    {
+        //! Flag to keep track if a new word has been found in the row
+        bool new_word_in_row {};
+
+        for (int col = 0; col < crossword.front().size(); ++col)
+        {
+            if ('-' != crossword[row][col])
+            {
+                new_word_in_row = false;
+                continue;
+            }
+
+            if (not new_word_in_row)
+            {
+                //! The first time hyphen is encountered, create new vector
+                //! containing crossword[row][col]. Set new_word_in_row to true
+                row_words.emplace_back({crossword[row][col]});
+                new_word_in_row = true;
+            }
+            else
+            {
+                //! Found hyphen but already created new vector
+                //! Just append hyphen to existing vector
+                row_words.back().emplace_back(crossword[row][col]);
+            }
+            
+        } // for (int col = 0; ...
+
+    } // for (int row = 0; ...
+
+    //! @todo Populate col_words
+
+} // static Vecs_ref_t populate_refs( ...
+
 //! @brief First attempt solution
 static std::vector<std::string> crosswordPuzzleFirstAttempt(
     std::vector<std::string> crossword,
