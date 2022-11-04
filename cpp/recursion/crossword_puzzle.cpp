@@ -94,7 +94,37 @@ static void populate_refs(std::vector<std::string>& crossword,
 
     } // for (int row = 0; ...
 
-    //! @todo Populate col_words
+    //! Populate col_words
+    for (int col = 0; col < crossword.front().size(); ++col)
+    {
+        //! Flag to keep track if a new word has been found in the column
+        bool new_word_in_col {};
+
+        for (int row = 0; row < crossword.size(); ++row)
+        {
+            if ('-' != crossword[row][col])
+            {
+                new_word_in_col = false;
+                continue;
+            }
+
+            if (not new_word_in_false)
+            {
+                //! The first time hyphen is encountered, create new vector
+                //! containing crossword[row][col]. Set new_word_in_col to true
+                col_words.emplace_back({crossword[row][col]});
+                new_word_in_col = true;
+            }
+            else
+            {
+                //! Found hyphen but already created new vector
+                //! Just append hyphen to existing vector
+                col_words.back().emplace_back(crossword[row][col]);
+            }
+
+        } // for (int row = 0; ...
+
+    } // for (int col = 0; ...
 
 } // static Vecs_ref_t populate_refs( ...
 
