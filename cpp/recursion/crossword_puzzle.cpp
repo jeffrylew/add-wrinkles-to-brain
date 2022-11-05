@@ -128,11 +128,24 @@ static void populate_refs(std::vector<std::string>& crossword,
 
 } // static Vecs_ref_t populate_refs( ...
 
+static void crosswordPuzzleFARecursive(std::vector<std::string>  crossword_in,
+                                       std::vector<std::string>  words_in,
+                                       std::vector<std::string>& crossword_out)
+{
+    // TODO
+
+} // static void crosswordPuzzleFARecursive( ...
+
 //! @brief First attempt solution
 static std::vector<std::string> crosswordPuzzleFirstAttempt(
     std::vector<std::string> crossword,
     std::string              words)
 {
+    const auto words_in      = split(words, ';');
+    auto       crossword_out = crossword;
+
+    crosswordPuzzleFARecursive(crossword, words_in, crossword_out);
+    return crossword_out;
 
 } // std::vector<std::string> crosswordPuzzleFirstAttempt( ...
 
