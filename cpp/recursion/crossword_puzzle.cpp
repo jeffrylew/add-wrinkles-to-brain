@@ -132,6 +132,40 @@ static void crosswordPuzzleFARecursive(std::vector<std::string>  crossword_in,
                                        std::vector<std::string>  words_in,
                                        std::vector<std::string>& crossword_out)
 {
+    //! Flag indicating if crossword is completely filled out
+    //! crossword guaranteed to be not empty by problem design
+    bool crossword_filled {true};
+    for (const auto& str : crossword_out)
+    {
+        crossword_filled =
+            crossword_filled && std::none_of(str.cbegin(),
+                                             str.cend(),
+                                             [](char c) -> bool {
+                                                return c == '-';
+                                             });
+        
+        if (not crossword_filled)
+        {
+            //! Encountered hyphen, crossword not completely filled yet
+            //! so stop checking
+            break;
+        }
+    }
+
+    //! Stop recursion if crossword is filled
+    if (crossword_filled)
+    {
+        return;
+    }
+
+    //! Crossword not completely filled but no more words to process
+    //! Reset crossword_out
+    if (words_in.empty())
+    {
+        crossword_out = crossword_in;
+        return;
+    }
+    
     // TODO
 
 } // static void crosswordPuzzleFARecursive( ...
