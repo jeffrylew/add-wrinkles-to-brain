@@ -166,7 +166,50 @@ static void crosswordPuzzleFARecursive(std::vector<std::string>  crossword_in,
         return;
     }
     
-    // TODO
+    //! This is definitely incorrect... Need to perform backtracking and
+    //! resetting if word does not fit into vecs_ref element. Should also
+    //! remove elements from words_in as part of recursive logic
+    Vecs_ref_t vecs_ref {};
+    populate_refs(crossword_out, vecs_ref);
+
+    for (const auto& word : words_in)
+    {
+        auto& horiz_words = std::get<0>(vecs_ref);
+        for (auto& char_vec : horiz_words)
+        {
+            if (word.size() != char_vec.size())
+            {
+                continue;
+            }
+            
+            for (int i = 0; i < char_vec.size(); ++i)
+            {
+                if (char_vec[i] != '-' && char_vec[i] != word[i])
+                {
+                    break;
+                }
+                char_vec[i] = word[i];
+            }
+        }
+
+        auto& vert_words = std::get<1>(vecs_ref);
+        for (auto& char_vec : vert_words)
+        {
+            if (word.size() != char_vec.size())
+            {
+                continue;
+            }
+            
+            for (int i = 0; i < char_vec.size(); ++i)
+            {
+                if (char_vec[i] != '-' && char_vec[i] != word[i])
+                {
+                    break;
+                }
+                char_vec[i] = word[i];
+            }
+        }
+    }
 
 } // static void crosswordPuzzleFARecursive( ...
 
