@@ -4,6 +4,7 @@ set(
   "luck_balance"
   "max_min"
   "minimum_absolute_difference_in_an_array"
+  "reverse_shuffle_merge"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
