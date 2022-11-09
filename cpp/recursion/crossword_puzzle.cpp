@@ -226,13 +226,152 @@ static std::vector<std::string> crosswordPuzzleFirstAttempt(
 
 } // std::vector<std::string> crosswordPuzzleFirstAttempt( ...
 
-// Test case X
-TEST(CrosswordPuzzleTest, TestCaseX) {
+//! @brief Recursive helper function for discussion solution
+//! @param[in,out] crossword Reference to vector of strings containing crossword
+//! @param[in,out] words     Reference to vector of strings containing words
+//! @return True if words list has been exhausted
+static bool crosswordPuzzleDS(std::vector<std::string>& crossword,
+                              std::vector<std::string>& words)
+{
+    auto try_place = [&](std::size_t i, std::size_t j, bool r) -> bool {
+        auto word = words.back();
 
+        if ((r ? j : i) + word.size() > 10ULL)
+        {
+            return false;
+        }
+        
+        for (std::size_t k = 0; k < word.size(); ++k)
+        {
+            if (crossword[r ? i : i + k][r ? j + k : j] != '-'
+                && crossword[r ? i : i + k][r ? j + k : j] != word[k])
+            {
+                return false;
+            }
+        }
+        
+        auto crossword_copy = crossword;
+        for (std::size_t k = 0; k < word.size(); ++k)
+        {
+            crossword[r ? i : i + k][r ? j + k : j] = word[k];
+        }
+        
+        words.pop_back();
+        bool success = crosswordPuzzleDS(crossword, words);
+        words.push_back(word);
+        if (not success)
+        {
+            crossword = crossword_copy;
+        }
+        
+        return success;
+
+    }; // auto try_place = ...
+
+    if (words.empty())
+    {
+        return true;
+    }
+    
+    for (std::size_t i = 0; i < 10ULL; ++i)
+    {
+        for (std::size_t j = 0; j < 10ULL; ++j)
+        {
+            //! By row
+            if (try_place(i, j, true))
+            {
+                return true;
+            }
+            
+            //! By col
+            if (try_place(i, j, false))
+            {
+                return true;
+            }
+        }
+    }
+    
+    return false;
+
+} // static bool crosswordPuzzleDS( ...
+
+//! @brief Solution from HR discussion section
+static std::vector<std::string> crosswordPuzzleDS(
+    std::vector<std::string> crossword,
+    std::string              words)
+{
+    auto word_vec = split(words, ';');
+    crosswordPuzzleDS(crossword, word_vec);
+    return crossword;
 }
 
-// Test case Y
-TEST(CrosswordPuzzleTest, TestCaseY) {
+// Test case 0
+TEST(CrosswordPuzzleTest, TestCase0) {
+    std::vector<std::string> input_crossword {
+        "+-++++++++",
+        "+-++++++++",
+        "+-++++++++",
+        "+-----++++",
+        "+-+++-++++",
+        "+-+++-++++",
+        "+++++-++++",
+        "++------++",
+        "+++++-++++",
+        "+++++-++++"};
 
+    std::string input_words {"LONDON;DELHI;ICELAND;ANKARA"};
+
+    const std::vector<std::string> expected_output {
+        "+L++++++++",
+        "+O++++++++",
+        "+N++++++++",
+        "+DELHI++++",
+        "+O+++C++++",
+        "+N+++E++++",
+        "+++++L++++",
+        "++ANKARA++",
+        "+++++N++++",
+        "+++++D++++"};
+    
+    const auto result = crosswordPuzzleDS(input_crossword, input_words);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
+}
+
+// Test case 1
+TEST(CrosswordPuzzleTest, TestCase1) {
+    std::vector<std::string> input_crossword {
+        "+-++++++++",
+        "+-++++++++",
+        "+-------++",
+        "+-++++++++",
+        "+-++++++++",
+        "+------+++",
+        "+-+++-++++",
+        "+++++-++++",
+        "+++++-++++",
+        "++++++++++"};
+
+    std::string input_words {"AGRA;NORWAY;ENGLAND;GWALIOR"};
+
+    const std::vector<std::string> expected_output {
+        "+E++++++++",
+        "+N++++++++",
+        "+GWALIOR++",
+        "+L++++++++",
+        "+A++++++++",
+        "+NORWAY+++",
+        "+D+++G++++",
+        "+++++R++++",
+        "+++++A++++",
+        "++++++++++"};
+    
+    const auto result = crosswordPuzzleDS(input_crossword, input_words);
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           result.cbegin()));
 }
 
