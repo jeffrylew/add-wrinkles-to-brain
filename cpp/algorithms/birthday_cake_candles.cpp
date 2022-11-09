@@ -66,7 +66,7 @@ static int birthdayCakeCandlesDS1(std::vector<int> candles)
     }
      */
 
-    return max;
+    return num_max;
 
 } // static int birthdayCakeCandlesDS1( ...
 
