@@ -6,9 +6,11 @@
 #include <tuple>
 #include <vector>
 
+/*
 //! Type alias for 2D vectors for horizontal and vertical words
 using Vecs_ref_t = std::tuple<std::vector<std::vector<char&>>,
                               std::vector<std::vector<char&>>>;
+                              */
 
 //! @brief Tokenize input string into vector
 //! @param[in] input String to split
@@ -31,7 +33,7 @@ static std::vector<std::string> split(std::string input, char delim)
     return output;
 
 } // static std::vector<std::string> split( ...
-
+/*
 //! @brief Reset 2D vector of char refs to crossword to contain original '-'
 //! @param[out] tuple_vecs Reference to Vecs_ref_t
 static void reset(Vecs_ref_t& tuple_vecs)
@@ -225,7 +227,7 @@ static std::vector<std::string> crosswordPuzzleFirstAttempt(
     return crossword_out;
 
 } // std::vector<std::string> crosswordPuzzleFirstAttempt( ...
-
+*/
 //! @brief Recursive helper function for discussion solution
 //! @param[in,out] crossword Reference to vector of strings containing crossword
 //! @param[in,out] words     Reference to vector of strings containing words
