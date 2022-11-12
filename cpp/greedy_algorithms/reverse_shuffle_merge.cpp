@@ -125,7 +125,7 @@ static std::string reverseShuffleMergeDS1(std::string s)
     } // for (auto it = s.crbegin(); ...
 
     std::string output {};
-    output.reserve(res.size())
+    output.reserve(res.size());
 
     while (not res.empty())
     {
