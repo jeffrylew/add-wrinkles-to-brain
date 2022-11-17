@@ -129,14 +129,25 @@ static long minimumPassesDS2(long m, long w, long p, long n)
     long invest {};
     long spend {max_long};
 
+    //! As long as we have fewer than n candies
     while (candy < n)
     {
+        //! Calculate if we have enough candy to buy machines/workers
+        //! If passes <= 0 then candy > p. Enough candy to buy (m * w) at least
+        //! If passes > 0 then not enough candy. Continue creating candy at
+        //! current rate until can afford a new worker/machines. i.e. p > candy,
+        //! candy += [(p - candy) / (m * w)] * (m * w) = (p - candy)
         long passes = (p - candy) / (m * w);
+
+        //! If can buy machines/workers then do so (greedy approach)
         if (passes <= 0)
         {
+            //! Potential total number of machines and workers if candy was used
+            //! We want to try to equal half machines/workers
             long mw   = (candy / p) + m + w;
             long half = static_cast<long>(std::ceil(mw / 2.0));
 
+            //! Add to group with fewer resources until have m + w equal to mw
             if (m > w)
             {
                 m = std::max(m, half);
@@ -148,7 +159,10 @@ static long minimumPassesDS2(long m, long w, long p, long n)
                 m = mw - w;
             }
 
+            //! Save remaining candy that can't be spent on machines/workers
             candy = candy % p;
+
+            //! In next step, add new production of candies for 1 pass
             passes = 1;
             
         } // if (passes <= 0)
@@ -156,6 +170,8 @@ static long minimumPassesDS2(long m, long w, long p, long n)
         candy += passes * m * w;
         invest += passes;
 
+        //! Save minimum between current saving strategy (not buying new machine
+        //! or worker) and using investment
         const auto val = static_cast<long>(
             invest + std::ceil((n - candy) / (m * w * 1.0)));
         spend = std::min(spend, val);
