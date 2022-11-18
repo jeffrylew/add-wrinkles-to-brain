@@ -55,6 +55,8 @@ static long minimumPassesFA(long m, long w, long p, long n)
 static long minimumPassesDS1(long m, long w, long p, long n)
 {
     //! @details https://www.hackerrank.com/challenges/making-candies/forum
+    //!
+    //!          This solution passes all test cases
 
     constexpr long max_long {std::numeric_limits<long>::max()};
 
@@ -122,6 +124,8 @@ static long minimumPassesDS1(long m, long w, long p, long n)
 static long minimumPassesDS2(long m, long w, long p, long n)
 {
     //! @details https://www.hackerrank.com/challenges/making-candies/forum
+    //!
+    //!          This solution fails test cases 8, 10, 12, 13, 17, 18, 20, 38
 
     constexpr long max_long {std::numeric_limits<long>::max()};
 
