@@ -8,6 +8,7 @@ set(
   "plus_minus"
   "simple_array_sum"
   "staircase"
+  "time_conversion"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
