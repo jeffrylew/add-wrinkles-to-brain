@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <sstream>
 #include <string>
 
 static std::string timeConversion(std::string s)
@@ -28,7 +29,31 @@ static std::string timeConversion(std::string s)
 
 } // static std::string timeConversion( ...
 
+//! @brief Solution inspired by HR discussion section
+//! @param[in] s std::string containing time in 12 hour format
+//! @return std::string containing time in 24 hour format
+static std::string timeConversionDS(std::string s)
+{
+    std::stringstream ss {s};
+    std::string       ele {};
+
+    std::getline(ss, ele, ':');
+    int hr {std::stoi(ele)};
+
+    hr = (s[8] == 'A') ? (hr == 12 ? 0 : hr) : (hr == 12 ? 12 : hr + 12);
+
+    ss.str("");
+    ss.clear();
+    ss.fill('0');
+    ss.width(2);
+    ss << hr;
+
+    return ss.str() + s.substr(2ULL, 6ULL);
+
+} // static std::string timeConversionDS( ...
+
 // Test case 0
 TEST(TimeConversionTest, TestCase0) {
     EXPECT_EQ("19:05:45", timeConversion("07:05:45PM"));
+    EXPECT_EQ("19:05:45", timeConversionDS("07:05:45PM"));
 }
