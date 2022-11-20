@@ -4,6 +4,7 @@ set(
   "birthday_cake_candles"
   "compare_the_triplets"
   "diagonal_difference"
+  "grading_students"
   "mini_max_sum"
   "plus_minus"
   "simple_array_sum"
