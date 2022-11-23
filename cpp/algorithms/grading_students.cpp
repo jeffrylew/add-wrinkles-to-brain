@@ -33,7 +33,10 @@ static std::vector<int> gradingStudents(std::vector<int> grades)
 
 } // static std::vector<int> gradingStudents( ...
 
-static std::vector<int> gradingStudentsDS(std::vector<int> grades)
+//! @brief Solution from HR editorial
+//! @param[in] grades Vector of grades before rounding
+//! @return Vector of grades after rounding
+static std::vector<int> gradingStudentsEditorial(std::vector<int> grades)
 {
     std::vector<int> output {};
 
@@ -61,7 +64,8 @@ static std::vector<int> gradingStudentsDS(std::vector<int> grades)
     }
 
     return output;
-}
+
+} // static std::vector<int> gradingStudentsEditorial( ...
 
 // Test case 0
 TEST(TestGradingStudents, TestCase0) {
@@ -73,7 +77,7 @@ TEST(TestGradingStudents, TestCase0) {
                            expected_output.cend(),
                            result.cbegin()));
 
-    const auto result2 = gradingStudentsDS({73, 67, 38, 33});
+    const auto result2 = gradingStudentsEditorial({73, 67, 38, 33});
 
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
