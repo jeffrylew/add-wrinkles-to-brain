@@ -2,6 +2,7 @@ set(
   hr_puzzles
   "a_tale_of_two_stacks"
   "balanced_brackets"
+  "castle_on_the_grid"
   "largest_rectangle"
   "min_max_riddle"
 )
