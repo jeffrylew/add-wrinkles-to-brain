@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <queue>
 #include <string>
 #include <tuple>
@@ -31,8 +32,21 @@ static int minimumMovesFA(std::vector<std::string> grid,
     std::queue<std::tuple<int, int, Dir, int>> unexplored_coords {};
     unexplored_coords.emplace(startX, startY, Dir::start, 0);
     
-    //! Minimum number of moves
+    //! Number of moves along current path
     int nmoves {};
+
+    //! Keep track of moves for all valid paths from start to goal
+    //! Need this since breadth first search finds the shortest path in terms
+    //! of row/col increments but there may be another path with the same
+    //! number of increments but have fewer "moves" as the problem describes.
+    //! e.g. Start coord at "s" and goal coord at "e"
+    //!     ". . . ."
+    //!     "s . X e"
+    //! Valid paths (denoted by "p") with same row/increments (6 "p" chars) are
+    //!     "p p p p"        and        "  p p p"
+    //!     "p   X p"                   "p p X p"
+    //! but the path on the left has 3 moves whereas the right has 4 moves
+    std::vector<int> valid_moves {};
     
     //! Grid extents
     const auto nrows = static_cast<int>(grid.size());
@@ -51,7 +65,9 @@ static int minimumMovesFA(std::vector<std::string> grid,
         
         if (row == goalX && col == goalY)
         {
-            return moves;
+            //! Found a valid path from start to goal, save its number of moves
+            valid_moves.push_back(moves);
+            continue;
         }
     
         //! Add valid adjacent col (Y) coordinates if not 'X'
@@ -92,10 +108,29 @@ static int minimumMovesFA(std::vector<std::string> grid,
         
     } // while (not unexplored_coords.empty())
     
-    //! If this point is reached then goal cannot be reached from start
-    return 0;
+    //! If valid_moves is empty then goal cannot be reached from start
+    return valid_moves.empty() ? 0 : *std::min_element(valid_moves.cbegin(),
+                                                       valid_moves.cend());
 
 } // static int minimumMovesFA( ...
+
+// Test case 0
+TEST(MinimumMovesTest, TestCase0) {
+    EXPECT_EQ(3, minimumMovesFA({".X..XX...X",
+                                 "X.........",
+                                 ".X.......X",
+                                 "..........",
+                                 "........X.",
+                                 ".X...XXX..",
+                                 ".....X..XX",
+                                 ".....X.X..",
+                                 "..........",
+                                 ".....X..XX"},
+                                 9,
+                                 1,
+                                 9,
+                                 6));
+}
 
 // Test case 10
 TEST(MinimumMovesTest, TestCase10) {
