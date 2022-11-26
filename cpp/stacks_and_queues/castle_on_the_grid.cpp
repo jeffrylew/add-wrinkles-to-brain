@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <algorithm>
+#include <limits>
 #include <queue>
 #include <string>
 #include <tuple>
@@ -35,7 +36,7 @@ static int minimumMovesFA(std::vector<std::string> grid,
     //! Number of moves along current path
     int nmoves {};
 
-    //! Keep track of moves for all valid paths from start to goal
+    //! Keep track of minimum moves for all valid paths from start to goal
     //! Need this since breadth first search finds the shortest path in terms
     //! of row/col increments but there may be another path with the same
     //! number of increments but have fewer "moves" as the problem describes.
@@ -46,7 +47,7 @@ static int minimumMovesFA(std::vector<std::string> grid,
     //!     "p p p p"        and        "  p p p"
     //!     "p   X p"                   "p p X p"
     //! but the path on the left has 3 moves whereas the right has 4 moves
-    std::vector<int> valid_moves {};
+    int min_moves {std::numeric_limits<int>::max()};
     
     //! Grid extents
     const auto nrows = static_cast<int>(grid.size());
@@ -65,8 +66,11 @@ static int minimumMovesFA(std::vector<std::string> grid,
         
         if (row == goalX && col == goalY)
         {
-            //! Found a valid path from start to goal, save its number of moves
-            valid_moves.push_back(moves);
+            //! Found a valid path from start to goal, can update min_moves
+            if (moves < min_moves)
+            {
+                min_moves = moves;
+            }
             continue;
         }
     
@@ -108,9 +112,8 @@ static int minimumMovesFA(std::vector<std::string> grid,
         
     } // while (not unexplored_coords.empty())
     
-    //! If valid_moves is empty then goal cannot be reached from start
-    return valid_moves.empty() ? 0 : *std::min_element(valid_moves.cbegin(),
-                                                       valid_moves.cend());
+    //! If min_moves is max int then goal cannot be reached from start
+    return min_moves == std::numeric_limits<int>::max() ? 0 : min_moves;
 
 } // static int minimumMovesFA( ...
 
