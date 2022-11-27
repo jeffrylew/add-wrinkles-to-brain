@@ -32,9 +32,6 @@ static int minimumMovesFA(std::vector<std::string> grid,
     //! Queue of coords/data <row, col, Dir, moves> to process
     std::queue<std::tuple<int, int, Dir, int>> unexplored_coords {};
     unexplored_coords.emplace(startX, startY, Dir::start, 0);
-    
-    //! Number of moves along current path
-    int nmoves {};
 
     //! Keep track of minimum moves for all valid paths from start to goal
     //! Need this since breadth first search finds the shortest path in terms
@@ -77,37 +74,37 @@ static int minimumMovesFA(std::vector<std::string> grid,
         //! Add valid adjacent col (Y) coordinates if not 'X'
         if (col - 1 >= 0 && grid[row][col - 1] != 'X')
         {
-            if (dir != Dir::travel_row)
-            {
-                nmoves = moves + 1;
-            }
-            unexplored_coords.emplace(row, col - 1, Dir::travel_row, nmoves);
+            unexplored_coords.emplace(row,
+                                      col - 1,
+                                      Dir::travel_row,
+                                      dir == Dir::travel_row ? moves
+                                                             : moves + 1);
         }
         if (col + 1 < ncols && grid[row][col + 1] != 'X')
         {
-            if (dir != Dir::travel_row)
-            {
-                nmoves = moves + 1;
-            }
-            unexplored_coords.emplace(row, col + 1, Dir::travel_row, nmoves);
+            unexplored_coords.emplace(row,
+                                      col + 1,
+                                      Dir::travel_row,
+                                      dir == Dir::travel_row ? moves
+                                                             : moves + 1);
         }
         
         //! Add valid adjacent row (X) coordinates if not 'X'
         if (row - 1 >= 0 && grid[row - 1][col] != 'X')
         {
-            if (dir != Dir::travel_col)
-            {
-                nmoves = moves + 1;
-            }
-            unexplored_coords.emplace(row - 1, col, Dir::travel_col, nmoves);
+            unexplored_coords.emplace(row - 1,
+                                      col,
+                                      Dir::travel_col,
+                                      dir == Dir::travel_col ? moves
+                                                             : moves + 1);
         }
         if (row + 1 < nrows && grid[row + 1][col] != 'X')
         {
-            if (dir != Dir::travel_col)
-            {
-                nmoves = moves + 1;
-            }
-            unexplored_coords.emplace(row + 1, col, Dir::travel_col, nmoves);
+            unexplored_coords.emplace(row + 1,
+                                      col,
+                                      Dir::travel_col,
+                                      dir == Dir::travel_col ? moves
+                                                             : moves + 1);
         }
         
     } // while (not unexplored_coords.empty())
