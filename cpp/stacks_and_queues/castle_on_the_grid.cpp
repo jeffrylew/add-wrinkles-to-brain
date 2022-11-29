@@ -3,11 +3,13 @@
 #include <algorithm>
 #include <limits>
 #include <queue>
+#include <set>
 #include <string>
 #include <tuple>
+#include <utility>
 #include <vector>
 
-//! @brief First attempt solution passes test cases 10, 12, 13
+//! @brief First attempt solution passes test cases 5, 7, 10-13
 //! @param[in] grid   Vector of strings representing rows of grid
 //! @param[in] startX Starting X coordinate
 //! @param[in] startY Starting Y coordinate
@@ -32,6 +34,10 @@ static int minimumMovesFA(std::vector<std::string> grid,
     //! Queue of coords/data <row, col, Dir, moves> to process
     std::queue<std::tuple<int, int, Dir, int>> unexplored_coords {};
     unexplored_coords.emplace(startX, startY, Dir::start, 0);
+
+    //! Set of already processed coords
+    std::set<std::pair<int, int>> processed_coords {};
+    std::ignore = processed_coords.emplace(startX, startY);
 
     //! Keep track of minimum moves for all valid paths from start to goal
     //! Need this since breadth first search finds the shortest path in terms
@@ -72,39 +78,51 @@ static int minimumMovesFA(std::vector<std::string> grid,
         }
     
         //! Add valid adjacent col (Y) coordinates if not 'X'
-        if (col - 1 >= 0 && grid[row][col - 1] != 'X')
+        if (col - 1 >= 0
+            && grid[row][col - 1] != 'X'
+            && 0 == processed_coords.count({row, col - 1}))
         {
             unexplored_coords.emplace(row,
                                       col - 1,
                                       Dir::travel_row,
                                       dir == Dir::travel_row ? moves
                                                              : moves + 1);
+            std::ignore = processed_coords.emplace(row, col - 1);
         }
-        if (col + 1 < ncols && grid[row][col + 1] != 'X')
+        if (col + 1 < ncols
+            && grid[row][col + 1] != 'X'
+            && 0 == processed_coords.count({row, col + 1}))
         {
             unexplored_coords.emplace(row,
                                       col + 1,
                                       Dir::travel_row,
                                       dir == Dir::travel_row ? moves
                                                              : moves + 1);
+            std::ignore = processed_coords.emplace(row, col + 1);
         }
         
         //! Add valid adjacent row (X) coordinates if not 'X'
-        if (row - 1 >= 0 && grid[row - 1][col] != 'X')
+        if (row - 1 >= 0
+            && grid[row - 1][col] != 'X'
+            && 0 == processed_coords.count({row - 1, col}))
         {
             unexplored_coords.emplace(row - 1,
                                       col,
                                       Dir::travel_col,
                                       dir == Dir::travel_col ? moves
                                                              : moves + 1);
+            std::ignore = processed_coords.emplace(row - 1, col);
         }
-        if (row + 1 < nrows && grid[row + 1][col] != 'X')
+        if (row + 1 < nrows
+            && grid[row + 1][col] != 'X'
+            && 0 == processed_coords.count({row + 1, col}))
         {
             unexplored_coords.emplace(row + 1,
                                       col,
                                       Dir::travel_col,
                                       dir == Dir::travel_col ? moves
                                                              : moves + 1);
+            std::ignore = processed_coords.emplace(row + 1, col);
         }
         
     } // while (not unexplored_coords.empty())
