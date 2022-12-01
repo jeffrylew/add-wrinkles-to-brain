@@ -260,6 +260,121 @@ static int minimumMovesDS(std::vector<std::string> grid,
 
 } // static int minimumMovesDS( ...
 
+//! @brief Helper function for second discussion solution
+//! @param[in,out] steps Reference to 2D vector for moves
+//! @param[in]     row   Current row to expand from
+//! @param[in]     col   Current column to expand from
+//! @param[in]     step  Current number of steps at position before expanding
+static void expandMap(std::vector<std::vector<int>>& steps,
+                      int                            row,
+                      int                            col,
+                      int                            step)
+{
+    const auto n = static_cast<int>(steps.size());
+
+    //! Traveling left at constant row
+    for (int j = col - 1; j > -1 && steps[row][j] != -2; --j)
+    {
+        if (steps[row][j] == step - 1)
+        {
+            steps[row][col] = step;
+        }
+    }
+
+    //! Traveling right at constant row
+    for (int j = col + 1; j < n && steps[row][j] != -2; ++j)
+    {
+        if (steps[row][j] == step - 1)
+        {
+            steps[row][col] = step;
+        }
+    }
+
+    //! Traveling up at constant col
+    for (int i = row - 1; i > -1 && steps[i][col] != -2; --i)
+    {
+        if (steps[i][col] == step - 1)
+        {
+            steps[row][col] = step;
+        }
+    }
+
+    //! Traveling down at constant col
+    for (int i = row + 1; i < n && steps[i][col] != -2; ++i)
+    {
+        if (steps[i][col] == step - 1)
+        {
+            steps[row][col] = step;
+        }
+    }
+
+} // static void expandMap( ...
+
+//! @brief Another solution from HR discussion section
+//! @param[in] grid   Vector of strings representing rows of grid
+//! @param[in] startX Starting X coordinate
+//! @param[in] startY Starting Y coordinate
+//! @param[in] goalX  Ending X coordinate
+//! @param[in] goalY  Ending Y coordinate
+//! @return Minimum moves to reach the goal
+static int minimumMovesDS2(std::vector<std::string> grid,
+                           int                      startX,
+                           int                      startY,
+                           int                      goalX,
+                           int                      goalY)
+{
+    //! @details https://www.hackerrank.com/challenges/castle-on-the-grid/forum
+    //!
+    //!          Traverse through grid, marking all locations that can be
+    //!          reached within 1 step. Then traverse again and mark all
+    //!          locations within 2 steps. When the goal location is reached,
+    //!          return the number of steps at that location
+
+    //! Grid is square
+    const auto grid_size = grid.size();
+    const auto n         = static_cast<int>(grid_size);
+
+    //! Number of moves at each position?
+    //! -1 indicates location not processed yet, -2 indicates an obstacle 
+    std::vector<std::vector<int>> steps(grid_size, std::vector<int>(grid_size));
+
+    //! Initialize steps
+    for (int row = 0; row < n; ++row)
+    {
+        for (int col = 0; col < n; ++col)
+        {
+            steps[row][col] = (grid[row][col] == '.') ? -1 : -2;
+        }
+    }
+    steps[startX][startY] = 0;
+
+    int step {};
+    while (true)
+    {
+        ++step;
+
+        for (int row = 0; row < n; ++row)
+        {
+            for (int col = 0; col < n; ++col)
+            {
+                //! Position at row,col is null/not processed yet
+                if (steps[row][col] == -1)
+                {
+                    expandMap(steps, row, col, step);
+
+                    //! steps at current position row,col will be updated
+                    if (row == goalX && col == goalY && steps[row][col] != -1)
+                    {
+                        return step;
+                    }
+                }
+            }
+        }
+
+    } // while (true)
+
+} // static int minimumMovesDS2( ...
+
 // Test case 0
 TEST(MinimumMovesTest, TestCase0) {
     EXPECT_EQ(3, minimumMovesFA({".X..XX...X",
@@ -291,6 +406,21 @@ TEST(MinimumMovesTest, TestCase0) {
                                  1,
                                  9,
                                  6));
+
+    EXPECT_EQ(3, minimumMovesDS2({".X..XX...X",
+                                  "X.........",
+                                  ".X.......X",
+                                  "..........",
+                                  "........X.",
+                                  ".X...XXX..",
+                                  ".....X..XX",
+                                  ".....X.X..",
+                                  "..........",
+                                  ".....X..XX"},
+                                  9,
+                                  1,
+                                  9,
+                                  6));
 }
 
 // Test case 10
@@ -298,6 +428,8 @@ TEST(MinimumMovesTest, TestCase10) {
     EXPECT_EQ(3, minimumMovesFA({".X.", ".X.", "..."}, 0, 0, 0, 2));
 
     EXPECT_EQ(3, minimumMovesDS({".X.", ".X.", "..."}, 0, 0, 0, 2));
+
+    EXPECT_EQ(3, minimumMovesDS2({".X.", ".X.", "..."}, 0, 0, 0, 2));
 }
 
 // Test case 12
@@ -305,6 +437,8 @@ TEST(MinimumMovesTest, TestCase12) {
     EXPECT_EQ(2, minimumMovesFA({"...", ".X.", ".X."}, 2, 0, 0, 2));
 
     EXPECT_EQ(2, minimumMovesDS({"...", ".X.", ".X."}, 2, 0, 0, 2));
+
+    EXPECT_EQ(2, minimumMovesDS2({"...", ".X.", ".X."}, 2, 0, 0, 2));
 }
 
 // Test case 13
@@ -312,4 +446,6 @@ TEST(MinimumMovesTest, TestCase13) {
     EXPECT_EQ(3, minimumMovesFA({"...", ".X.", ".X."}, 2, 0, 2, 2));
 
     EXPECT_EQ(3, minimumMovesDS({"...", ".X.", ".X."}, 2, 0, 2, 2));
+
+    EXPECT_EQ(3, minimumMovesDS2({"...", ".X.", ".X."}, 2, 0, 2, 2));
 }
