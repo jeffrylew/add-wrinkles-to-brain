@@ -508,8 +508,78 @@ TEST(MinimumMovesTest, TestCase10) {
     // Down:  steps untouched
     //
     // Increment step to 2
+    // steps is
+    //     0  1  2  col
+    //  0  0 -2 -1
+    //  1  1 -2 -1
+    //  2  1 -1 -1
+    // row
     //
-    // TODO: Write out logic again
+    // steps[row = 0][col = 0] == 0 != -1 so skip if statement
+    // Skip expandMap(steps, row = 0, col = 0, step = 2)
+    //
+    // steps[row = 0][col = 1] == -2 != -1 so skip if statement
+    // Skip expandMap(steps, row = 0, col = 1, step = 2)
+    //
+    // steps[row = 0][col = 2] == -1 so enter if statement
+    // expandMap(steps, row = 0, col = 2, step = 2)
+    // left:  steps untouched since steps[row = 0][j = 1] == -2
+    // Right: steps untouched
+    // Up:    steps untouched
+    // Down:  steps untouched since steps[1][2] == steps[2][2] == -1 != step - 1
+    //
+    // row == goalX and col == goalY but steps[0][2] == -1 so continue
+    //
+    // steps[row = 1][col = 0] == 1 != -1 so skip if statement
+    // Skip expandMap(steps, row = 1, col = 0, step = 2)
+    //
+    // steps[row = 1][col = 1] == -2 != -1 so skip if statement
+    // Skip expandMap(steps, row = 1, col = 1, step = 2)
+    //
+    // steps[row = 1][col = 2] == -1 so enter if statement
+    // expandMap(steps, row = 1, col = 2, step = 2)
+    // Left:  steps untouched since steps[row = 1][j = 1] == -2
+    // Right: steps untouched
+    // Up:    steps untouched since steps[0][2] == -1 != step - 1
+    // Down:  steps untouched since steps[2][2] == -1 != step - 1
+    //
+    // steps[row = 2][col = 0] == 1 != -1 so skip if statement 
+    // Skip expandMap(steps, row = 2, col = 0, step = 2)
+    //
+    // steps[row = 2][col = 1] == -1 so enter if statement
+    // expandMap(steps, row = 2, col = 1, step = 2)
+    // Left:  steps[row = 2][j = 0] == step - 1 so enter if statement
+    //        Set steps[row = 2][j = 0] = step == 2
+    //        steps is now:
+    //         0 -2 -1
+    //         1 -2 -1
+    //         1  2 -1
+    // Right: steps untouched since steps[2][2] == -1 != step - 1
+    // Up:    steps untouched
+    // Down:  steps untouched
+    //
+    // steps[row = 2][col = 2] == -1 so enter if statement
+    // expandMap(steps, row = 2, col = 2, step = 2)
+    // Left:  steps[2][1] == 2 != step - 1
+    //        steps[2][0] == 1 == step - 1 so enter if statement
+    //        Set steps[row = 2][col = 2] = step == 2
+    //        steps is now:
+    //         0 -2 -1
+    //         1 -2 -1
+    //         1  2  2
+    // Right: steps untouched
+    // Up:    steps untouched since steps[1][2] == steps[0][2] == -1 != step - 1
+    // Down:  steps untouched
+    //
+    // Increment step to 3
+    // steps is
+    //     0  1  2  col
+    //  0  0 -2 -1
+    //  1  1 -2 -1
+    //  2  1  2  2
+    // row
+    //
+    // TODO: Write out logic once more
 }
 
 // Test case 12
