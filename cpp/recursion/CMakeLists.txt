@@ -3,6 +3,7 @@ set(
   "crossword_puzzle"
   "davis_staircase"
   "fibonacci_numbers"
+  "recursive_digit_sum"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
