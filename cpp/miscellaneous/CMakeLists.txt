@@ -1,6 +1,7 @@
 set(
   hr_puzzles
   "flipping_bits"
+  "time_complexity_primality"
 )
 
 foreach(puzzle IN ITEMS ${hr_puzzles})
