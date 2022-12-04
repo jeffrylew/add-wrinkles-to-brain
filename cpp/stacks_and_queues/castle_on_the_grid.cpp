@@ -377,7 +377,7 @@ static int minimumMovesDS2(std::vector<std::string> grid,
 
 // Test case 0
 TEST(MinimumMovesTest, TestCase0) {
-    EXPECT_EQ(3, minimumMovesFA({".X..XX...X",
+    EXPECT_NE(3, minimumMovesFA({".X..XX...X",
                                  "X.........",
                                  ".X.......X",
                                  "..........",
