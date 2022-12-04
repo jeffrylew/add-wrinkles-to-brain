@@ -579,7 +579,26 @@ TEST(MinimumMovesTest, TestCase10) {
     //  2  1  2  2
     // row
     //
-    // TODO: Write out logic once more
+    // steps[row = 0][col = 0] == 0 != -1 so skip if statement
+    // Skip expandMap(steps, row = 0, col = 0, step = 3)
+    //
+    // steps[row = 0][col = 1] == -2 != -1 so skip if statement
+    // Skip expandMap(steps, row = 0, col = 1, step = 3)
+    //
+    // steps[row = 0][col = 2] == -1 so enter if statement
+    // expandMap(steps, row = 0, col = 2, step = 3)
+    // left:  steps untouched since steps[row = 0][j = 1] == -2
+    // Right: steps untouched
+    // Up:    steps untouched
+    // Down:  steps[i = 2][col = 2] == step - 1 so enter if statement
+    //        Set steps[row = 0][col = 2] = step = 3
+    //        steps is now:
+    //         0 -2  3
+    //         1 -2 -1
+    //         1  2  2
+    //
+    // row == goalX and col == goalY and steps[0][2] == 3
+    // return step = 3
 }
 
 // Test case 12
