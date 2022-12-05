@@ -43,17 +43,35 @@ static int superDigitFA(std::string n, int k)
 
 } // static int superDigitFA( ...
 
+//! @brief Solution from HR discussion section
+//! @param[in] n Reference to std::string containing number with digits to sum
+//! @param[in] k Number of times to concatenate n
+//! @return Super digit of n repeated k times
+static int superDigitDS1(std::string n, int k)
+{
+    //! @details https://www.hackerrank.com/challenges/recursive-digit-sum/forum
+
+    const auto n_int = std::stoi(n);
+    const auto x     = n_int * k % 9;
+
+    return (0 == x) ? 9 : x;
+
+} // static int superDigitDS1( ...
+
 // Test case 0
 TEST(SuperDigitTest, TestCase0) {
     EXPECT_EQ(3, superDigitFA("148", 3));
+    EXPECT_EQ(3, superDigitDS1("148", 3));
 }
 
 // Test case 10
 TEST(SuperDigitTest, TestCase10) {
     EXPECT_EQ(8, superDigitFA("9875", 4));
+    EXPECT_EQ(8, superDigitDS1("9875", 4));
 }
 
 // Test case 11
 TEST(SuperDigitTest, TestCase11) {
     EXPECT_EQ(9, superDigitFA("123", 3));
+    EXPECT_EQ(9, superDigitDS1("123", 3));
 }
