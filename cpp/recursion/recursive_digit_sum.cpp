@@ -1,30 +1,31 @@
 #include <gtest/gtest.h>
 
+#include <cstdint>
 #include <string>
 
 //! @brief Helper function for first attempt solution that sums digits in string
 //! @param[in] n Reference to std::string containing number with digits to sum
 //! @param[in] k Number of times to concatenate n
 //! @return Sum of digits from string n repeated k times
-static int sum_digits(const std::string& n, int k)
+static std::int64_t sum_digits(const std::string& n, int k)
 {
-    int sum {};
+    std::int64_t sum {};
 
     //! ASCII value of '0'
-    static constexpr auto zero_char = static_cast<int>('0');
+    static constexpr auto zero_char = static_cast<std::int64_t>('0');
 
     //! Add digits in string n
     for (const auto c : n)
     {
-        sum += static_cast<int>(c) - zero_char;
+        sum += static_cast<std::int64_t>(c) - zero_char;
     }
 
     //! Sum of digits is repeated k times
-    return sum * k;
+    return sum * static_cast<std::int64_t>(k);
 
-} // static int sum_digits( ...
+} // static std::int64_t sum_digits( ...
 
-//! @brief First attempt solution to determine super digit fails test cases 7, 8
+//! @brief First attempt solution to determine super digit
 //! @param[in] n Reference to std::string containing number with digits to sum
 //! @param[in] k Number of times to concatenate n
 //! @return Super digit of n repeated k times
@@ -34,7 +35,7 @@ static int superDigitFA(std::string n, int k)
 
     if (1 == n_size)
     {
-        return sum_digits(n, 1);
+        return static_cast<int>(sum_digits(n, 1));
     }
 
     const auto sum_digits_str = std::to_string(sum_digits(n, k));
