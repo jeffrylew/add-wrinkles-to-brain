@@ -45,7 +45,7 @@ static bool isSubsequenceDCGreedy(std::string s, std::string t)
 {
     //! @details https://leetcode.com/problems/is-subsequence/solutions/640928/
     //!          official-solution/
-    
+
     const auto s_size = static_cast<int>(s.size());
     const auto t_size = static_cast<int>(t.size());
 
@@ -53,8 +53,37 @@ static bool isSubsequenceDCGreedy(std::string s, std::string t)
 
 } // static bool isSubsequenceDCGreedy( ...
 
+//! @brief Two-pointers solution
+//! @param[in] s Source string
+//! @param[in] t Target string
+//! @return True if s is a subsequence of t, else false
+static bool isSubsequenceTwoPtrs(std::string s, std::string t)
+{
+    const auto s_size = static_cast<int>(s.size());
+    const auto t_size = static_cast<int>(t.size());
+
+    int s_idx = 0;
+    int t_idx = 0;
+
+    while (s_idx < s_size && t_idx < t_size)
+    {
+        //! Move both pointers or just the t_idx pointer
+        if (s[s_idx] == t[t_idx])
+        {
+            ++s_idx;
+        }
+        ++t_idx;
+    }
+    
+    return s_idx == s_size;
+
+} // static bool isSubsequenceTwoPtrs( ...
+
 TEST(IsSubsequenceTest, SampleTest)
 {
     EXPECT_TRUE(isSubsequenceDCGreedy("abc", "ahbgdc"));
     EXPECT_FALSE(isSubsequenceDCGreedy("axc", "ahbgdc"));
+
+    EXPECT_TRUE(isSubsequenceTwoPtrs("abc", "ahbgdc"));
+    EXPECT_FALSE(isSubsequenceTwoPtrs("axc", "ahbgdc"));
 }
