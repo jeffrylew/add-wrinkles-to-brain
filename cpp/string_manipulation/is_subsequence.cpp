@@ -93,6 +93,25 @@ static bool isSubsequenceGreedyHashmap(std::string s, std::string t)
     //!          say S1, S2, ... and you want to check one by one to see if T
     //!          has its subsequence. In this scenario, how would you change
     //!          your code?
+    //!
+    //!          Time complexity O(t_size + s_size * log(t_size))
+    //!          - Building hashmap out of target string would take O(t_size),
+    //!            could redesign API by putting hashmap construction in class
+    //!            constructor
+    //!          - Scanning through source string is O(s_size). Hashmap lookup
+    //!            is constant but finding suitable target index for source
+    //!            string would take O(t_size) with linear search or
+    //!            O(log(t_size)) with binary search. So this portion of
+    //!            algorithm is bounded by O(s_size * log(t_size)). This also
+    //!            depends on target string character distribution - if they are
+    //!            distributed evenly, hashmap entries would have a shorter list
+    //!            of indices and hence a shorter search time. In general, this
+    //!            hashmap approach should be faster than the two-pointers
+    //!            approach even though their time complexities say otherwise.
+    //!          Space complexity O(t_size) for the hashmap consisting of
+    //!          indices for each character in target string. In the worst case,
+    //!          may have as many keys as values, i.e. eah character corresponds
+    //!          to a unique index
 
     //! Precomputation, build hashmap from target string
     std::unordered_map<char, std::vector<int>> letterIndicesTable {};
@@ -116,6 +135,8 @@ static bool isSubsequenceGreedyHashmap(std::string s, std::string t)
         bool isMatched {};
 
         //! Loop over index vector associated with letter
+        //! Since index vector is ordered, could use binary search to decrease
+        //! time complexity from O(t_size) to O(log(t_size))
         for (const auto matchIndex : letterIndicesTable[letter])
         {
             if (currMatchIndex < matchIndex)
