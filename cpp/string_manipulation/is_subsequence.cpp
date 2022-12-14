@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 static bool rec_isSubsequenceDCGreedy(const std::string& source,
                                       const std::string& target,
@@ -59,6 +61,8 @@ static bool isSubsequenceDCGreedy(std::string s, std::string t)
 //! @return True if s is a subsequence of t, else false
 static bool isSubsequenceTwoPtrs(std::string s, std::string t)
 {
+    //! @details Time complexity O(t_size), space complexity O(1)
+
     const auto s_size = static_cast<int>(s.size());
     const auto t_size = static_cast<int>(t.size());
 
@@ -79,6 +83,61 @@ static bool isSubsequenceTwoPtrs(std::string s, std::string t)
 
 } // static bool isSubsequenceTwoPtrs( ...
 
+//! @brief Greedy Matching with Character Indices Hashmap
+//! @param[in] s Source string
+//! @param[in] t Target string
+//! @return True if s is a subsequence of t, else false
+static bool isSubsequenceGreedyHashmap(std::string s, std::string t)
+{
+    //! @details Addresses follow-up question: If there are lots of incoming S,
+    //!          say S1, S2, ... and you want to check one by one to see if T
+    //!          has its subsequence. In this scenario, how would you change
+    //!          your code?
+
+    //! Precomputation, build hashmap from target string
+    std::unordered_map<char, std::vector<int>> letterIndicesTable {};
+    for (int i = 0; i < t.size(); ++i)
+    {
+        auto ret = letterIndicesTable.emplace(t[i], std::vector<int>({i}));
+        if (not ret.second)
+        {
+            ret.first->second.emplace_back(i);
+        }
+    }
+    
+    int currMatchIndex {-1};
+    for (const auto letter : s)
+    {
+        if (letterIndicesTable.count(letter) == 0U)
+        {
+            return false; // No match, early exit
+        }
+
+        bool isMatched {};
+
+        //! Loop over index vector associated with letter
+        for (const auto matchIndex : letterIndicesTable[letter])
+        {
+            if (currMatchIndex < matchIndex)
+            {
+                currMatchIndex = matchIndex;
+                isMatched      = true;
+                break;
+            }
+        }
+
+        if (not isMatched)
+        {
+            return false;
+        }
+
+    } // for (const auto letter : s)
+
+    //! Consume all characters in the source string
+    return true;
+
+} // static bool isSubsequenceGreedyHashmap( ...
+
 TEST(IsSubsequenceTest, SampleTest)
 {
     EXPECT_TRUE(isSubsequenceDCGreedy("abc", "ahbgdc"));
@@ -86,4 +145,7 @@ TEST(IsSubsequenceTest, SampleTest)
 
     EXPECT_TRUE(isSubsequenceTwoPtrs("abc", "ahbgdc"));
     EXPECT_FALSE(isSubsequenceTwoPtrs("axc", "ahbgdc"));
+
+    EXPECT_TRUE(isSubsequenceGreedyHashmap("abc", "ahbgdc"));
+    EXPECT_FALSE(isSubsequenceGreedyHashmap("axc", "ahbgdc"));
 }
