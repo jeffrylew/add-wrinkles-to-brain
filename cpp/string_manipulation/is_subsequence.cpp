@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -159,6 +160,64 @@ static bool isSubsequenceGreedyHashmap(std::string s, std::string t)
 
 } // static bool isSubsequenceGreedyHashmap( ...
 
+//! @brief Dynamic programming solution
+//! @param[in] s Source string
+//! @param[in] t Target string
+//! @return True if s is a subsequence of t, else false
+static bool isSubsequenceDP(std::string s, std::string t)
+{
+    //! @details Time complexity O(s_size * t_size) since in worst case need to
+    //!          iterate through each element in matrix.
+    //!          Space complexity O(s_size * t_size) for matrix of this size
+
+    //! The source string is empty
+    if (s.empty())
+    {
+        return true;
+    }
+
+    //! Each element represents maximal number of deletions between a prefix of
+    //! source string (s[0:col]) and a prefix of target string (t[0:row])
+    //! Row (y-axis) count: s.size()
+    //! Col (x-axis) count: t.size()
+    std::vector<std::vector<int>> dp(1ULL + s.size(),
+                                     1ULL + std::vector<int>(t.size()));
+
+    const auto sourceLen = static_cast<int>(s.size());
+    const auto targetLen = static_cast<int>(t.size());
+
+    //! DP calculation, fill the matrix column by column, bottom up
+    for (int col = 1; col <= targetLen; ++col)
+    {
+        for (int row = 1; row <= sourceLen; ++row)
+        {
+            if (s[row - 1] == t[col - 1])
+            {
+                //! Find another match
+                dp[row][col] = dp[row - 1][col - 1] + 1;
+            }
+            else
+            {
+                //! Retrieve the maximal result from previous prefixes
+                dp[row][col] = std::max(dp[row][col - 1], dp[row - 1][col]);
+            }
+
+        } // for (int row = 1; ...
+
+        //! Check if we can consume the entire source string,
+        //! with the current prefix of the target string
+        if (dp[sourceLen][col])
+        {
+            return true;
+        }
+
+    } // for (int col = 1; ...
+
+    //! Matching failure
+    return false;
+
+} // static bool isSubsequenceDP( ...
+
 TEST(IsSubsequenceTest, SampleTest)
 {
     EXPECT_TRUE(isSubsequenceDCGreedy("abc", "ahbgdc"));
@@ -169,4 +228,7 @@ TEST(IsSubsequenceTest, SampleTest)
 
     EXPECT_TRUE(isSubsequenceGreedyHashmap("abc", "ahbgdc"));
     EXPECT_FALSE(isSubsequenceGreedyHashmap("axc", "ahbgdc"));
+
+    EXPECT_TRUE(isSubsequenceDP("abc", "ahbgdc"));
+    EXPECT_FALSE(isSubsequenceDP("axc", "ahbgdc"));
 }
