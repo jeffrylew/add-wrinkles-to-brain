@@ -6,6 +6,7 @@ set(
   "diagonal_difference"
   "grading_students"
   "mini_max_sum"
+  "number_line_jumps"
   "plus_minus"
   "simple_array_sum"
   "staircase"
