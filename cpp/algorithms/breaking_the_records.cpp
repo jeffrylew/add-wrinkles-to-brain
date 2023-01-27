@@ -31,6 +31,38 @@ static std::vector<int> breakingRecords(std::vector<int> scores)
 
 } // static std::vector<int> breakingRecords( ...
 
+//! @brief Solution from HR discussion section
+//! @param[in] scores Vector of points scored per game
+//! @return Vector with most points records in index 0 and least in index 1
+static std::vector<int> breakingRecordsDS(std::vector<int> scores)
+{
+    //! @details https://www.hackerrank.com/challenges/
+    //!          breaking-best-and-worst-records/forum
+
+    int min {scores[0]};
+    int max {scores[0]};
+
+    int minCount {};
+    int maxCount {};
+    
+    for (const int score : scores)
+    {
+        if (score < min)
+        {
+            min = score;
+            ++minCount;
+        }
+        else if (score > max)
+        {
+            max = score;
+            ++maxCount;
+        }
+    }
+    
+    return {maxCount, minCount};
+
+} // static std::vector<int> breakingRecordsDS( ...
+
 // Test case 0
 TEST(BreakingRecordsTest, TestCase0)
 {
@@ -41,6 +73,12 @@ TEST(BreakingRecordsTest, TestCase0)
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            result.cbegin()));
+    
+    const auto resultDS = breakingRecordsDS({10, 5, 20, 20, 4, 5, 2, 25, 1});
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           resultDS.cbegin()));
 }
 
 // Test case 1
@@ -53,4 +91,11 @@ TEST(BreakingRecordsTest, TestCase1)
     EXPECT_TRUE(std::equal(expected_output.cbegin(),
                            expected_output.cend(),
                            result.cbegin()));
+    
+    const auto resultDS =
+        breakingRecordsDS({3, 4, 21, 36, 10, 28, 35, 5, 24, 42});
+
+    EXPECT_TRUE(std::equal(expected_output.cbegin(),
+                           expected_output.cend(),
+                           resultDS.cbegin()));
 }
