@@ -2,6 +2,7 @@ set(
   hr_puzzles
   "a_very_big_sum"
   "birthday_cake_candles"
+  "breaking_the_records"
   "compare_the_triplets"
   "diagonal_difference"
   "grading_students"
